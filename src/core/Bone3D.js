@@ -2,125 +2,128 @@ import { END, START } from '../constants.js';
 import { Joint3D } from './Joint3D.js';
 import { V3 } from '../math/V3.js';
 
-function Bone3D ( startLocation, endLocation, directionUV, length, color ){
+function Bone3D( startLocation, endLocation, directionUV, length, color ) {
 
-    this.joint = new Joint3D();
-    this.start = new V3();
-    this.end = new V3();
-    
-    this.boneConnectionPoint = END;
-    this.length = 0;
+	this.joint = new Joint3D();
+	this.start = new V3();
+	this.end = new V3();
 
-    this.color = color || 0xFFFFFF;
-    this.name = '';
+	this.boneConnectionPoint = END;
+	this.length = 0;
 
-    this.init( startLocation, endLocation, directionUV, length );
+	this.color = color || 0xFFFFFF;
+	this.name = '';
 
-};
+	this.init( startLocation, endLocation, directionUV, length );
+
+}
 
 Object.assign( Bone3D.prototype, {
 
-    isBone3D: true,
+	isBone3D: true,
 
-    init:function( startLocation, endLocation, directionUV, length ){
+	init: function ( startLocation, endLocation, directionUV, length ) {
 
-        this.setStartLocation( startLocation );
-        if( endLocation ){ 
-            this.setEndLocation( endLocation );
-            this.length = this.getLength();
+		this.setStartLocation( startLocation );
+		if ( endLocation ) {
 
-        } else {
-            this.setLength( length );
-            this.setEndLocation( this.start.plus( directionUV.normalised().multiplyScalar( length ) ) );
-        }
+			this.setEndLocation( endLocation );
+			this.length = this.getLength();
 
-    },
+		} else {
 
-    clone:function () {
+			this.setLength( length );
+			this.setEndLocation( this.start.plus( directionUV.normalised().multiplyScalar( length ) ) );
 
-        var b = new Bone3D( this.start, this.end );
-        b.joint = this.joint.clone();
-        return b;
+		}
 
-    },
+	},
 
-    // SET
+	clone: function () {
 
-    setColor: function ( c ) {
+		var b = new Bone3D( this.start, this.end );
+		b.joint = this.joint.clone();
+		return b;
 
-        this.color = c;
+	},
 
-    },
+	// SET
 
-    setBoneConnectionPoint: function ( bcp ) {
+	setColor: function ( c ) {
 
-        this.boneConnectionPoint = bcp;
+		this.color = c;
 
-    },
+	},
 
-    setHingeClockwise: function ( angle ) {
+	setBoneConnectionPoint: function ( bcp ) {
 
+		this.boneConnectionPoint = bcp;
 
-        this.joint.setHingeClockwise( angle );
+	},
 
-    },
-
-    setHingeAnticlockwise: function ( angle ) {
-
-        this.joint.setHingeAnticlockwise( angle );
-
-    },
-
-    setBallJointConstraintDegs: function ( angle ) {
-
-        this.joint.setBallJointConstraintDegs( angle );
-
-    },
-
-    setStartLocation: function ( location ) {
-
-        this.start.copy ( location );
-
-    },
-
-    setEndLocation: function ( location ) {
-
-        this.end.copy ( location );
-
-    },
-
-    setLength: function ( lng ) {
-
-        if ( lng > 0 ) this.length = lng;
-
-    },
-
-    setJoint: function ( joint ) {
-
-        this.joint = joint;
-
-    },
+	setHingeClockwise: function ( angle ) {
 
 
-    // GET
+		this.joint.setHingeClockwise( angle );
 
-    getBoneConnectionPoint: function () {
+	},
 
-        return this.boneConnectionPoint;
+	setHingeAnticlockwise: function ( angle ) {
 
-    },
+		this.joint.setHingeAnticlockwise( angle );
 
-    getDirectionUV: function () {
+	},
 
-        return this.end.minus( this.start ).normalize();
+	setBallJointConstraintDegs: function ( angle ) {
 
-    },
+		this.joint.setBallJointConstraintDegs( angle );
 
-    getLength: function(){
+	},
 
-        return this.start.distanceTo( this.end );
+	setStartLocation: function ( location ) {
 
-    },
+		this.start.copy( location );
+
+	},
+
+	setEndLocation: function ( location ) {
+
+		this.end.copy( location );
+
+	},
+
+	setLength: function ( lng ) {
+
+		if ( lng > 0 ) this.length = lng;
+
+	},
+
+	setJoint: function ( joint ) {
+
+		this.joint = joint;
+
+	},
+
+
+	// GET
+
+	getBoneConnectionPoint: function () {
+
+		return this.boneConnectionPoint;
+
+	},
+
+	getDirectionUV: function () {
+
+		return this.end.minus( this.start ).normalize();
+
+	},
+
+	getLength: function () {
+
+		return this.start.distanceTo( this.end );
+
+	},
 
 } );
 

@@ -2,7 +2,7 @@ import { _Math } from './Math.js';
 import { V3 } from './V3.js';
 
 
-function M3 () {
+function M3() {
 
 	this.elements = [
 
@@ -55,15 +55,15 @@ Object.assign( M3.prototype, {
 		var te = this.elements;
 
 	    te[ 0 ] = xAxis.x;
-	    te[ 3 ] = xAxis.y; 
+	    te[ 3 ] = xAxis.y;
 	    te[ 6 ] = xAxis.z;
-	        
+
 	    te[ 1 ] = yAxis.x;
-	    te[ 4 ] = yAxis.y; 
+	    te[ 4 ] = yAxis.y;
 	    te[ 7 ] = yAxis.z;
-	        
+
 	    te[ 2 ] = zAxis.x;
-	    te[ 5 ] = zAxis.y; 
+	    te[ 5 ] = zAxis.y;
 	    te[ 8 ] = zAxis.z;
 
 	    return this;
@@ -83,32 +83,36 @@ Object.assign( M3.prototype, {
 	},
 
 	createRotationMatrix: function ( referenceDirection ) {
-  
+
 	    var zAxis = referenceDirection;//normalised();
-	    var xAxis = new V3(1, 0, 0);
-	    var yAxis = new V3(0, 1, 0);
-	            
+	    var xAxis = new V3( 1, 0, 0 );
+	    var yAxis = new V3( 0, 1, 0 );
+
 	    // Handle the singularity (i.e. bone pointing along negative Z-Axis)...
-	    if( referenceDirection.z < -0.9999999 ){
-	        xAxis.set(1, 0, 0); // ...in which case positive X runs directly to the right...
-	        yAxis.set(0, 1, 0); // ...and positive Y runs directly upwards.
-	    } else {
-	        var a = 1/(1 + zAxis.z);
-	        var b = -zAxis.x * zAxis.y * a;           
-	        xAxis.set( 1 - zAxis.x * zAxis.x * a, b, -zAxis.x ).normalize();
-	        yAxis.set( b, 1 - zAxis.y * zAxis.y * a, -zAxis.y ).normalize();
-	    }
+	    if ( referenceDirection.z < - 0.9999999 ) {
+
+	        xAxis.set( 1, 0, 0 ); // ...in which case positive X runs directly to the right...
+	        yAxis.set( 0, 1, 0 ); // ...and positive Y runs directly upwards.
+
+		} else {
+
+	        var a = 1 / ( 1 + zAxis.z );
+	        var b = - zAxis.x * zAxis.y * a;
+	        xAxis.set( 1 - zAxis.x * zAxis.x * a, b, - zAxis.x ).normalize();
+	        yAxis.set( b, 1 - zAxis.y * zAxis.y * a, - zAxis.y ).normalize();
+
+		}
 
 	    return this.setV3( xAxis, yAxis, zAxis );
 
 	},
 
-	rotateAboutAxis: function ( v, angle, rotationAxis ){
+	rotateAboutAxis: function ( v, angle, rotationAxis ) {
 
 	    var sinTheta = Math.sin( angle );
 	    var cosTheta = Math.cos( angle );
 	    var oneMinusCosTheta = 1.0 - cosTheta;
-	    
+
 	    // It's quicker to pre-calc these and reuse than calculate x * y, then y * x later (same thing).
 	    var xyOne = rotationAxis.x * rotationAxis.y * oneMinusCosTheta;
 	    var xzOne = rotationAxis.x * rotationAxis.z * oneMinusCosTheta;

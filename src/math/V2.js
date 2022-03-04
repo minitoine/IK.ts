@@ -1,15 +1,15 @@
-function V2( x, y ){
+function V2( x, y ) {
 
-    this.x = x || 0;
-    this.y = y || 0;
-    
+	this.x = x || 0;
+	this.y = y || 0;
+
 }
 
 Object.assign( V2.prototype, {
 
 	isVector2: true,
 
-	set: function( x, y ){
+	set: function ( x, y ) {
 
 	    this.x = x || 0;
 	    this.y = y || 0;
@@ -59,7 +59,7 @@ Object.assign( V2.prototype, {
 	normalised: function () {
 
 	    return new V2( this.x, this.y ).normalize();
-	
+
 	},
 
 	lengthSq: function () {
@@ -100,7 +100,7 @@ Object.assign( V2.prototype, {
 	divideBy: function ( value ) {
 
 	    return new V2( this.x, this.y ).divideScalar( value );
-	
+
 	},
 
 	dot: function ( a, b ) {
@@ -109,17 +109,17 @@ Object.assign( V2.prototype, {
 
 	},
 
-	negate: function() { 
+	negate: function () {
 
-	    this.x = -this.x;
-	    this.y = -this.y;
+	    this.x = - this.x;
+	    this.y = - this.y;
 	    return this;
 
 	},
 
-	negated: function () { 
+	negated: function () {
 
-	    return new V2( -this.x, -this.y );
+	    return new V2( - this.x, - this.y );
 
 	},
 
@@ -137,29 +137,29 @@ Object.assign( V2.prototype, {
 
 	},
 
-	cross: function( v ) {
+	cross: function ( v ) {
 
 	    return this.x * v.y - this.y * v.x;
 
 	},
 
-	sign: function( v ) {
+	sign: function ( v ) {
 
 		var s = this.cross( v );
-		return s >= 0 ? 1 : -1;
+		return s >= 0 ? 1 : - 1;
 
 	},
 
 	approximatelyEquals: function ( v, t ) {
 
 	    if ( t < 0 ) return false;
-	    var xDiff = Math.abs(this.x - v.x);
-	    var yDiff = Math.abs(this.y - v.y);
+	    var xDiff = Math.abs( this.x - v.x );
+	    var yDiff = Math.abs( this.y - v.y );
 	    return ( xDiff < t && yDiff < t );
 
 	},
 
-	rotate: function( angle ) {
+	rotate: function ( angle ) {
 
 		var cos = Math.cos( angle );
 		var sin = Math.sin( angle );
@@ -173,9 +173,9 @@ Object.assign( V2.prototype, {
 
 	angleTo: function ( v ) {
 
-		var a = this.dot(v) / (Math.sqrt( this.lengthSq() * v.lengthSq() ));
-		if(a <= -1) return Math.PI;
-		if(a >= 1) return 0;
+		var a = this.dot( v ) / ( Math.sqrt( this.lengthSq() * v.lengthSq() ) );
+		if ( a <= - 1 ) return Math.PI;
+		if ( a >= 1 ) return 0;
 		return Math.acos( a );
 
 	},
@@ -184,18 +184,18 @@ Object.assign( V2.prototype, {
 
 		var a = this.angleTo( v );
 		var s = this.sign( v );
-		return s === 1 ? a : -a;
-		
+		return s === 1 ? a : - a;
+
 	},
 
 	constrainedUV: function ( baselineUV, min, max ) {
 
-        var angle = baselineUV.getSignedAngle( this );
-        if( angle > max ) this.copy( baselineUV ).rotate(max);
-        if( angle < min ) this.copy( baselineUV ).rotate(min);
-        return this;
+		var angle = baselineUV.getSignedAngle( this );
+		if ( angle > max ) this.copy( baselineUV ).rotate( max );
+		if ( angle < min ) this.copy( baselineUV ).rotate( min );
+		return this;
 
-    },
+	},
 
 } );
 

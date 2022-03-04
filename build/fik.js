@@ -1,8 +1,8 @@
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
-	(factory((global.FIK = {})));
-}(this, (function (exports) { 'use strict';
+	(global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.FIK = {}));
+})(this, (function (exports) { 'use strict';
 
 	// Polyfills
 
@@ -3610,9 +3610,7 @@
 	        var m = new THREE.MeshStandardMaterial({ color:color, wireframe:false, shadowSide:false });
 	        //m.color.setHex( color );
 
-	        var m2 = new THREE.MeshBasicMaterial({ wireframe : true });
-
-	        var extraMesh;
+	        new THREE.MeshBasicMaterial({ wireframe : true });
 
 	        /*var type = bone.getJoint().type;
 	        switch(type){
@@ -3657,7 +3655,6 @@
 	        b.receiveShadow = true;
 	        
 	        this.scene.add( b );
-	        if( extraMesh ) b.add( extraMesh );
 	        return b;
 
 	    },
@@ -3858,51 +3855,51 @@
 
 	} );
 
-	exports._Math = _Math;
-	exports.V2 = V2;
-	exports.V3 = V3;
-	exports.M3 = M3;
-	exports.Joint3D = Joint3D;
-	exports.Bone3D = Bone3D;
-	exports.Chain3D = Chain3D;
-	exports.Structure3D = Structure3D;
-	exports.Joint2D = Joint2D;
 	exports.Bone2D = Bone2D;
+	exports.Bone3D = Bone3D;
 	exports.Chain2D = Chain2D;
-	exports.Structure2D = Structure2D;
-	exports.IKSolver = IKSolver;
+	exports.Chain3D = Chain3D;
+	exports.DOWN = DOWN;
+	exports.END = END;
+	exports.GLOBAL_ABSOLUTE = GLOBAL_ABSOLUTE;
+	exports.GLOBAL_HINGE = GLOBAL_HINGE;
+	exports.GLOBAL_ROTOR = GLOBAL_ROTOR;
 	exports.HISolver = HISolver;
-	exports.REVISION = REVISION;
+	exports.IKSolver = IKSolver;
+	exports.J_BALL = J_BALL;
+	exports.J_GLOBAL = J_GLOBAL;
+	exports.J_LOCAL = J_LOCAL;
+	exports.Joint2D = Joint2D;
+	exports.Joint3D = Joint3D;
+	exports.LEFT = LEFT;
+	exports.LOCAL_ABSOLUTE = LOCAL_ABSOLUTE;
+	exports.LOCAL_HINGE = LOCAL_HINGE;
+	exports.LOCAL_RELATIVE = LOCAL_RELATIVE;
+	exports.LOCAL_ROTOR = LOCAL_ROTOR;
+	exports.M3 = M3;
+	exports.MAX_VALUE = MAX_VALUE;
+	exports.NONE = NONE;
+	exports.PI = PI;
 	exports.PRECISION = PRECISION;
 	exports.PRECISION_DEG = PRECISION_DEG;
-	exports.MAX_VALUE = MAX_VALUE;
-	exports.PI = PI;
-	exports.TORAD = TORAD;
-	exports.TODEG = TODEG;
-	exports.NONE = NONE;
-	exports.GLOBAL_ROTOR = GLOBAL_ROTOR;
-	exports.GLOBAL_HINGE = GLOBAL_HINGE;
-	exports.LOCAL_ROTOR = LOCAL_ROTOR;
-	exports.LOCAL_HINGE = LOCAL_HINGE;
-	exports.GLOBAL_ABSOLUTE = GLOBAL_ABSOLUTE;
-	exports.LOCAL_RELATIVE = LOCAL_RELATIVE;
-	exports.LOCAL_ABSOLUTE = LOCAL_ABSOLUTE;
-	exports.J_BALL = J_BALL;
-	exports.J_LOCAL = J_LOCAL;
-	exports.J_GLOBAL = J_GLOBAL;
-	exports.START = START;
-	exports.END = END;
-	exports.X_AXE = X_AXE;
-	exports.Y_AXE = Y_AXE;
-	exports.Z_AXE = Z_AXE;
-	exports.X_NEG = X_NEG;
-	exports.Y_NEG = Y_NEG;
-	exports.Z_NEG = Z_NEG;
-	exports.UP = UP;
-	exports.DOWN = DOWN;
-	exports.LEFT = LEFT;
+	exports.REVISION = REVISION;
 	exports.RIGHT = RIGHT;
+	exports.START = START;
+	exports.Structure2D = Structure2D;
+	exports.Structure3D = Structure3D;
+	exports.TODEG = TODEG;
+	exports.TORAD = TORAD;
+	exports.UP = UP;
+	exports.V2 = V2;
+	exports.V3 = V3;
+	exports.X_AXE = X_AXE;
+	exports.X_NEG = X_NEG;
+	exports.Y_AXE = Y_AXE;
+	exports.Y_NEG = Y_NEG;
+	exports.Z_AXE = Z_AXE;
+	exports.Z_NEG = Z_NEG;
+	exports._Math = _Math;
 
 	Object.defineProperty(exports, '__esModule', { value: true });
 
-})));
+}));

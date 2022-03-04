@@ -44,13 +44,13 @@ export var X_AXE = new V3( 1, 0, 0 );
 export var Y_AXE = new V3( 0, 1, 0 );
 export var Z_AXE = new V3( 0, 0, 1 );
 
-export var X_NEG = new V3( -1, 0, 0 );
-export var Y_NEG = new V3( 0, -1, 0 );
-export var Z_NEG = new V3( 0, 0, -1 );
+export var X_NEG = new V3( - 1, 0, 0 );
+export var Y_NEG = new V3( 0, - 1, 0 );
+export var Z_NEG = new V3( 0, 0, - 1 );
 
 // Define world-space 2D cardinal axes
 
 export var UP = new V2( 0, 1 );
-export var DOWN = new V2( 0, -1 );
-export var LEFT = new V2( -1, 0 );
+export var DOWN = new V2( 0, - 1 );
+export var LEFT = new V2( - 1, 0 );
 export var RIGHT = new V2( 1, 0 );

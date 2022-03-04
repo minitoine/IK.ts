@@ -1,352 +1,395 @@
 import { NONE, GLOBAL_ROTOR, GLOBAL_HINGE, LOCAL_ROTOR, LOCAL_HINGE, J_BALL, J_GLOBAL, J_LOCAL, END, START } from '../constants.js';
 import { _Math } from '../math/Math.js';
 
-function Structure3D ( scene ) {
+function Structure3D( scene ) {
 
-    this.fixedBaseMode = true;
+	this.fixedBaseMode = true;
 
-    this.chains = [];
-    this.meshChains = [];
-    this.targets = [];
-    this.numChains = 0;
+	this.chains = [];
+	this.meshChains = [];
+	this.targets = [];
+	this.numChains = 0;
 
-    this.scene = scene || null;
+	this.scene = scene || null;
 
-    this.tmpMtx = new FIK.M3();
+	this.tmpMtx = new FIK.M3();
 
-    this.isWithMesh = false;
+	this.isWithMesh = false;
 
 }
 
 Object.assign( Structure3D.prototype, {
 
-    update:function(){
+	update: function () {
 
-        var chain, mesh, bone, target;
-        var hostChainNumber;
-        var hostBone, constraintType;
+		var chain, mesh, bone, target;
+		var hostChainNumber;
+		var hostBone, constraintType;
 
-        //var i =  this.numChains;
+		//var i =  this.numChains;
 
-        //while(i--){
+		//while(i--){
 
-        for( var i = 0; i < this.numChains; i++ ){
+		for ( var i = 0; i < this.numChains; i ++ ) {
 
-            chain = this.chains[i];
-            target = this.targets[i];
+			chain = this.chains[ i ];
+			target = this.targets[ i ];
 
-            hostChainNumber = chain.getConnectedChainNumber();
+			hostChainNumber = chain.getConnectedChainNumber();
 
-            if ( hostChainNumber !== -1 ){
+			if ( hostChainNumber !== - 1 ) {
 
-                hostBone  = this.chains[ hostChainNumber ].bones[ chain.getConnectedBoneNumber() ];
+				hostBone = this.chains[ hostChainNumber ].bones[ chain.getConnectedBoneNumber() ];
 
-                chain.setBaseLocation( chain.getBoneConnectionPoint() === START ? hostBone.start : hostBone.end );
+				chain.setBaseLocation( chain.getBoneConnectionPoint() === START ? hostBone.start : hostBone.end );
 
-                // Now that we've clamped the base location of this chain to the start or end point of the bone in the chain we are connected to, it's
-                // time to deal with any base bone constraints...
+				// Now that we've clamped the base location of this chain to the start or end point of the bone in the chain we are connected to, it's
+				// time to deal with any base bone constraints...
 
-                constraintType = chain.getBaseboneConstraintType();
+				constraintType = chain.getBaseboneConstraintType();
 
-                switch (constraintType){
+				switch ( constraintType ) {
 
-                    case NONE:         // Nothing to do because there's no basebone constraint
-                    case GLOBAL_ROTOR: // Nothing to do because the basebone constraint is not relative to bones in other chains in this structure
-                    case GLOBAL_HINGE: // Nothing to do because the basebone constraint is not relative to bones in other chains in this structure
-                        break;
-                        
-                    // If we have a local rotor or hinge constraint then we must calculate the relative basebone constraint before calling solveForTarget
-                    case LOCAL_ROTOR:
-                    case LOCAL_HINGE:
+					case NONE: // Nothing to do because there's no basebone constraint
+					case GLOBAL_ROTOR: // Nothing to do because the basebone constraint is not relative to bones in other chains in this structure
+					case GLOBAL_HINGE: // Nothing to do because the basebone constraint is not relative to bones in other chains in this structure
+						break;
 
-                    //chain.resetTarget(); // ??
+						// If we have a local rotor or hinge constraint then we must calculate the relative basebone constraint before calling solveForTarget
+					case LOCAL_ROTOR:
+					case LOCAL_HINGE:
 
-                    // Get the direction of the bone this chain is connected to and create a rotation matrix from it.
-                    this.tmpMtx.createRotationMatrix( hostBone.getDirectionUV() );
-                    //var connectionBoneMatrix = new FIK.M3().createRotationMatrix( hostBone.getDirectionUV() );
-                        
-                    // We'll then get the basebone constraint UV and multiply it by the rotation matrix of the connected bone 
-                    // to make the basebone constraint UV relative to the direction of bone it's connected to.
-                    //var relativeBaseboneConstraintUV = connectionBoneMatrix.times( c.getBaseboneConstraintUV() ).normalize();
-                    var relativeBaseboneConstraintUV = chain.getBaseboneConstraintUV().clone().applyM3( this.tmpMtx );
-                            
-                    // Update our basebone relative constraint UV property
-                    chain.setBaseboneRelativeConstraintUV( relativeBaseboneConstraintUV );
-                        
-                    // Update the relative reference constraint UV if we hav a local hinge
-                    if (constraintType === LOCAL_HINGE )
-                        chain.setBaseboneRelativeReferenceConstraintUV( chain.bones[0].joint.getHingeReferenceAxis().clone().applyM3( this.tmpMtx ) );
-                        
-                    break;
+						//chain.resetTarget(); // ??
 
-                }
+						// Get the direction of the bone this chain is connected to and create a rotation matrix from it.
+						this.tmpMtx.createRotationMatrix( hostBone.getDirectionUV() );
+						//var connectionBoneMatrix = new FIK.M3().createRotationMatrix( hostBone.getDirectionUV() );
 
-                
-                
+						// We'll then get the basebone constraint UV and multiply it by the rotation matrix of the connected bone
+						// to make the basebone constraint UV relative to the direction of bone it's connected to.
+						//var relativeBaseboneConstraintUV = connectionBoneMatrix.times( c.getBaseboneConstraintUV() ).normalize();
+						var relativeBaseboneConstraintUV = chain.getBaseboneConstraintUV().clone().applyM3( this.tmpMtx );
 
-            }
+						// Update our basebone relative constraint UV property
+						chain.setBaseboneRelativeConstraintUV( relativeBaseboneConstraintUV );
 
-            // Finally, update the target and solve the chain
+						// Update the relative reference constraint UV if we hav a local hinge
+						if ( constraintType === LOCAL_HINGE )
+							chain.setBaseboneRelativeReferenceConstraintUV( chain.bones[ 0 ].joint.getHingeReferenceAxis().clone().applyM3( this.tmpMtx ) );
 
-            if ( !chain.useEmbeddedTarget ) chain.solveForTarget( target );
-            else chain.solveForEmbeddedTarget();
+						break;
 
-            // update 3d mesh
+				}
 
-            if( this.isWithMesh ){
 
-                mesh = this.meshChains[i];
 
-                for ( var j = 0; j < chain.numBones; j++ ) {
-                    bone = chain.bones[j];
-                    mesh[j].position.copy( bone.start );
-                    mesh[j].lookAt( bone.end );
-                }
 
-            }
+			}
 
-        }
+			// Finally, update the target and solve the chain
 
-    },
+			if ( ! chain.useEmbeddedTarget ) chain.solveForTarget( target );
+			else chain.solveForEmbeddedTarget();
 
-    clear:function(){
+			// update 3d mesh
 
-        this.clearAllBoneMesh();
+			if ( this.isWithMesh ) {
 
-        var i, j;
+				mesh = this.meshChains[ i ];
 
-        i = this.numChains;
-        while(i--){
-            this.remove(i);
-        }
+				for ( var j = 0; j < chain.numBones; j ++ ) {
 
-        this.chains = [];
-        this.meshChains = [];
-        this.targets = [];
+					bone = chain.bones[ j ];
+					mesh[ j ].position.copy( bone.start );
+					mesh[ j ].lookAt( bone.end );
 
-    },
+				}
 
-    add:function( chain, target, meshBone ){
+			}
 
-        this.chains.push( chain );
-         
-        this.targets.push( target ); 
-        this.numChains ++;
+		}
 
-        if( meshBone ) this.addChainMeshs( chain );; 
+	},
 
-    },
+	clear: function () {
 
-    
+		this.clearAllBoneMesh();
 
-    remove:function( id ){
+		var i, j;
 
-        this.chains[id].clear();
-        this.chains.splice(id, 1);
-        this.meshChains.splice(id, 1);
-        this.targets.splice(id, 1);
-        this.numChains --;
+		i = this.numChains;
+		while ( i -- ) {
 
-    },
+			this.remove( i );
 
-    setFixedBaseMode:function( value ){
+		}
 
-        this.fixedBaseMode = value; 
-        var i = this.numChains, host;
-        while(i--){
-            host = this.chains[i].getConnectedChainNumber();
-            if( host===-1 ) this.chains[i].setFixedBaseMode( this.fixedBaseMode );
-        }
+		this.chains = [];
+		this.meshChains = [];
+		this.targets = [];
 
-    },
+	},
 
-    getNumChains:function(){
+	add: function ( chain, target, meshBone ) {
 
-        return this.numChains;
+		this.chains.push( chain );
 
-    },
+		this.targets.push( target );
+		this.numChains ++;
 
-    getChain:function(id){
+		if ( meshBone ) this.addChainMeshs( chain );
 
-        return this.chains[id];
+	},
 
-    },
 
-    connectChain : function( Chain, chainNumber, boneNumber, point, target, meshBone, color ){
 
-        var c = chainNumber;
-        var n = boneNumber;
+	remove: function ( id ) {
 
-        if ( chainNumber > this.numChains ) return;
-        if ( boneNumber > this.chains[chainNumber].numBones ) return;
+		this.chains[ id ].clear();
+		this.chains.splice( id, 1 );
+		this.meshChains.splice( id, 1 );
+		this.targets.splice( id, 1 );
+		this.numChains --;
 
-        // Make a copy of the provided chain so any changes made to the original do not affect this chain
-        var chain = Chain.clone();//new Fullik.Chain( newChain );
-        if( color !== undefined ) chain.setColor( color );
+	},
 
-        // Connect the copy of the provided chain to the specified chain and bone in this structure
-        //chain.connectToStructure( this, chainNumber, boneNumber );
+	setFixedBaseMode: function ( value ) {
 
-        chain.setBoneConnectionPoint( point === 'end' ? END : START );
-        chain.setConnectedChainNumber( c );
-        chain.setConnectedBoneNumber( n );
+		this.fixedBaseMode = value;
+		var i = this.numChains, host;
+		while ( i -- ) {
 
-        // The chain as we were provided should be centred on the origin, so we must now make it
-        // relative to the start location of the given bone in the given chain.
+			host = this.chains[ i ].getConnectedChainNumber();
+			if ( host === - 1 ) this.chains[ i ].setFixedBaseMode( this.fixedBaseMode );
 
-        var position = point === 'end' ? this.chains[ c ].bones[ n ].end : this.chains[ c ].bones[ n ].start;
-         
+		}
 
-        chain.setBaseLocation( position );
-        // When we have a chain connected to a another 'host' chain, the chain is which is connecting in
-        // MUST have a fixed base, even though that means the base location is 'fixed' to the connection
-        // point on the host chain, rather than a static location.
-        chain.setFixedBaseMode( true );
+	},
 
-        // Translate the chain we're connecting to the connection point
-        for ( var i = 0; i < chain.numBones; i++ ){
+	getNumChains: function () {
 
-            chain.bones[i].start.add( position );
-            chain.bones[i].end.add( position );
+		return this.numChains;
 
-        }
-        
-        this.add( chain, target, meshBone );
+	},
 
-    },
+	getChain: function ( id ) {
 
+		return this.chains[ id ];
 
-    // 3D THREE
+	},
 
-    addChainMeshs:function( chain, id ){
+	connectChain: function ( Chain, chainNumber, boneNumber, point, target, meshBone, color ) {
 
-        this.isWithMesh = true;
+		var c = chainNumber;
+		var n = boneNumber;
 
-        var meshBone = [];
-        var lng  = chain.bones.length;
-        for(var i = 0; i < lng; i++ ){
-            meshBone.push( this.addBoneMesh( chain.bones[i], i-1, meshBone, chain ));
-        }
+		if ( chainNumber > this.numChains ) return;
+		if ( boneNumber > this.chains[ chainNumber ].numBones ) return;
 
-        this.meshChains.push( meshBone );
+		// Make a copy of the provided chain so any changes made to the original do not affect this chain
+		var chain = Chain.clone();//new Fullik.Chain( newChain );
+		if ( color !== undefined ) chain.setColor( color );
 
-    },
+		// Connect the copy of the provided chain to the specified chain and bone in this structure
+		//chain.connectToStructure( this, chainNumber, boneNumber );
 
-    addBoneMesh:function( bone, prev, ar, chain ){
+		chain.setBoneConnectionPoint( point === 'end' ? END : START );
+		chain.setConnectedChainNumber( c );
+		chain.setConnectedBoneNumber( n );
 
-        var size = bone.length;
-        var color = bone.color;
-        var g = new THREE.CylinderBufferGeometry ( 1, 0.5, size, 4 );
-        g.applyMatrix( new THREE.Matrix4().makeRotationX( -Math.PI*0.5 ) )
-        g.applyMatrix( new THREE.Matrix4().makeTranslation( 0, 0, size*0.5 ) );
-        var m = new THREE.MeshStandardMaterial({ color:color, wireframe:false, shadowSide:false });
+		// The chain as we were provided should be centred on the origin, so we must now make it
+		// relative to the start location of the given bone in the given chain.
 
-        var m2 = new THREE.MeshBasicMaterial({ wireframe : true });
-        //var m4 = new THREE.MeshBasicMaterial({ wireframe : true, color:color, transparent:true, opacity:0.3 });
+		var position = point === 'end' ? this.chains[ c ].bones[ n ].end : this.chains[ c ].bones[ n ].start;
 
-        var extraMesh = null;
-        var extraGeo;
 
-        var type = bone.joint.type;
-        switch(type){
-            case J_BALL :
-                m2.color.setHex(0xFF6600);
-                var angle = bone.joint.rotor;
-             
-                if(angle === Math.PI) break;
-                var s = 2//size/4;
-                var r = 2;//
-                extraGeo = new THREE.CylinderBufferGeometry ( 0, r, s, 6,1, true );
-                extraGeo.applyMatrix( new THREE.Matrix4().makeRotationX( -Math.PI*0.5 ) )
-                extraGeo.applyMatrix( new THREE.Matrix4().makeTranslation( 0, 0, s*0.5 ) );
-                extraMesh = new THREE.Mesh( extraGeo,  m2 );
-            break;
-            case J_GLOBAL :
-            var axe =  bone.joint.getHingeRotationAxis();
-            //console.log( axe );
-            var a1 = bone.joint.min;
-            var a2 = bone.joint.max;
-            var r = 2;
-            //console.log('global', a1, a2)
-            m2.color.setHex(0xFFFF00);
-            extraGeo = new THREE.CircleBufferGeometry( r, 12, a1, -a1+a2 );
-            //extraGeo.applyMatrix( new THREE.Matrix4().makeRotationX( -Math.PI*0.5 ) );
-            if( axe.z === 1 ) extraGeo.applyMatrix( new THREE.Matrix4().makeRotationX( -Math.PI*0.5 ) );
-            if( axe.y === 1 ) {extraGeo.applyMatrix( new THREE.Matrix4().makeRotationY( -Math.PI*0.5 ) );extraGeo.applyMatrix( new THREE.Matrix4().makeRotationX( -Math.PI*0.5 ) );}
-            if( axe.x === 1 ) {  extraGeo.applyMatrix(new THREE.Matrix4().makeRotationY( Math.PI*0.5 ));}
+		chain.setBaseLocation( position );
+		// When we have a chain connected to a another 'host' chain, the chain is which is connecting in
+		// MUST have a fixed base, even though that means the base location is 'fixed' to the connection
+		// point on the host chain, rather than a static location.
+		chain.setFixedBaseMode( true );
 
-            extraMesh = new THREE.Mesh( extraGeo,  m2 );
-            break;
-            case J_LOCAL :
+		// Translate the chain we're connecting to the connection point
+		for ( var i = 0; i < chain.numBones; i ++ ) {
 
-            var axe =  bone.joint.getHingeRotationAxis();
-            
+			chain.bones[ i ].start.add( position );
+			chain.bones[ i ].end.add( position );
 
-            var r = 2;
-            var a1 = bone.joint.min;
-            var a2 = bone.joint.max;
-            //console.log('local', a1, a2)
-            m2.color.setHex(0x00FFFF);
-            extraGeo = new THREE.CircleBufferGeometry( r, 12, a1, -a1+a2 );
-            extraGeo.applyMatrix( new THREE.Matrix4().makeRotationX( -Math.PI*0.5 ) );
+		}
 
-            if( axe.z === 1 ) { extraGeo.applyMatrix( new THREE.Matrix4().makeRotationY( -Math.PI*0.5 ) ); extraGeo.applyMatrix( new THREE.Matrix4().makeRotationX( Math.PI*0.5 ) );}
-            if( axe.x === 1 ) extraGeo.applyMatrix( new THREE.Matrix4().makeRotationZ( -Math.PI*0.5 ) );
-            if( axe.y === 1 ) { extraGeo.applyMatrix( new THREE.Matrix4().makeRotationX( Math.PI*0.5 ) ); extraGeo.applyMatrix(new THREE.Matrix4().makeRotationY( Math.PI*0.5 ));}
+		this.add( chain, target, meshBone );
 
-            extraMesh = new THREE.Mesh( extraGeo,  m2 );
-            break;
-        }
+	},
 
-        var axe = new THREE.AxesHelper(1.5);
-        //var bw = new THREE.Mesh( g,  m4 );
 
-        var b = new THREE.Mesh( g,  m );
-        b.add(axe);
-        //b.add(bw);
-        this.scene.add( b );
+	// 3D THREE
 
-        b.castShadow = true;
-        b.receiveShadow = true;
+	addChainMeshs: function ( chain, id ) {
 
-        if( prev !== -1 ){
-            if( extraMesh !== null ){ 
-                if(type!==J_GLOBAL){
-                    extraMesh.position.z = chain.bones[prev].length;
-                    ar[prev].add( extraMesh );
-                } else {
-                    b.add( extraMesh );
-                }
-                
-            }
-        } else {
-             if( extraMesh !== null ) b.add( extraMesh );
-        }
-       
-        return b;
+		this.isWithMesh = true;
 
-    },
+		var meshBone = [];
+		var lng = chain.bones.length;
+		for ( var i = 0; i < lng; i ++ ) {
 
-    clearAllBoneMesh:function(){
+			meshBone.push( this.addBoneMesh( chain.bones[ i ], i - 1, meshBone, chain ) );
 
-        if(!this.isWithMesh) return;
+		}
 
-        var i, j, b;
+		this.meshChains.push( meshBone );
 
-        i = this.meshChains.length;
-        while(i--){
-            j = this.meshChains[i].length;
-            while(j--){
-                b = this.meshChains[i][j];
-                this.scene.remove( b );
-                b.geometry.dispose();
-                b.material.dispose();
-            }
-            this.meshChains[i] = [];
-        }
-        this.meshChains = [];
+	},
 
-    }
+	addBoneMesh: function ( bone, prev, ar, chain ) {
+
+		var size = bone.length;
+		var color = bone.color;
+		var g = new THREE.CylinderBufferGeometry( 1, 0.5, size, 4 );
+		g.applyMatrix( new THREE.Matrix4().makeRotationX( - Math.PI * 0.5 ) );
+		g.applyMatrix( new THREE.Matrix4().makeTranslation( 0, 0, size * 0.5 ) );
+		var m = new THREE.MeshStandardMaterial( { color: color, wireframe: false, shadowSide: false } );
+
+		var m2 = new THREE.MeshBasicMaterial( { wireframe: true } );
+		//var m4 = new THREE.MeshBasicMaterial({ wireframe : true, color:color, transparent:true, opacity:0.3 });
+
+		var extraMesh = null;
+		var extraGeo;
+
+		var type = bone.joint.type;
+		switch ( type ) {
+
+			case J_BALL :
+				m2.color.setHex( 0xFF6600 );
+				var angle = bone.joint.rotor;
+
+				if ( angle === Math.PI ) break;
+				var s = 2;//size/4;
+				var r = 2;//
+				extraGeo = new THREE.CylinderBufferGeometry( 0, r, s, 6, 1, true );
+				extraGeo.applyMatrix( new THREE.Matrix4().makeRotationX( - Math.PI * 0.5 ) );
+				extraGeo.applyMatrix( new THREE.Matrix4().makeTranslation( 0, 0, s * 0.5 ) );
+				extraMesh = new THREE.Mesh( extraGeo, m2 );
+				break;
+			case J_GLOBAL :
+				var axe = bone.joint.getHingeRotationAxis();
+				//console.log( axe );
+				var a1 = bone.joint.min;
+				var a2 = bone.joint.max;
+				var r = 2;
+				//console.log('global', a1, a2)
+				m2.color.setHex( 0xFFFF00 );
+				extraGeo = new THREE.CircleBufferGeometry( r, 12, a1, - a1 + a2 );
+				//extraGeo.applyMatrix( new THREE.Matrix4().makeRotationX( -Math.PI*0.5 ) );
+				if ( axe.z === 1 ) extraGeo.applyMatrix( new THREE.Matrix4().makeRotationX( - Math.PI * 0.5 ) );
+				if ( axe.y === 1 ) {
+
+					extraGeo.applyMatrix( new THREE.Matrix4().makeRotationY( - Math.PI * 0.5 ) ); extraGeo.applyMatrix( new THREE.Matrix4().makeRotationX( - Math.PI * 0.5 ) );
+
+				}
+
+				if ( axe.x === 1 ) {
+
+					extraGeo.applyMatrix( new THREE.Matrix4().makeRotationY( Math.PI * 0.5 ) );
+
+				}
+
+				extraMesh = new THREE.Mesh( extraGeo, m2 );
+				break;
+			case J_LOCAL :
+
+				var axe = bone.joint.getHingeRotationAxis();
+
+
+				var r = 2;
+				var a1 = bone.joint.min;
+				var a2 = bone.joint.max;
+				//console.log('local', a1, a2)
+				m2.color.setHex( 0x00FFFF );
+				extraGeo = new THREE.CircleBufferGeometry( r, 12, a1, - a1 + a2 );
+				extraGeo.applyMatrix( new THREE.Matrix4().makeRotationX( - Math.PI * 0.5 ) );
+
+				if ( axe.z === 1 ) {
+
+					extraGeo.applyMatrix( new THREE.Matrix4().makeRotationY( - Math.PI * 0.5 ) ); extraGeo.applyMatrix( new THREE.Matrix4().makeRotationX( Math.PI * 0.5 ) );
+
+				}
+
+				if ( axe.x === 1 ) extraGeo.applyMatrix( new THREE.Matrix4().makeRotationZ( - Math.PI * 0.5 ) );
+				if ( axe.y === 1 ) {
+
+					extraGeo.applyMatrix( new THREE.Matrix4().makeRotationX( Math.PI * 0.5 ) ); extraGeo.applyMatrix( new THREE.Matrix4().makeRotationY( Math.PI * 0.5 ) );
+
+				}
+
+				extraMesh = new THREE.Mesh( extraGeo, m2 );
+				break;
+
+		}
+
+		var axe = new THREE.AxesHelper( 1.5 );
+		//var bw = new THREE.Mesh( g,  m4 );
+
+		var b = new THREE.Mesh( g, m );
+		b.add( axe );
+		//b.add(bw);
+		this.scene.add( b );
+
+		b.castShadow = true;
+		b.receiveShadow = true;
+
+		if ( prev !== - 1 ) {
+
+			if ( extraMesh !== null ) {
+
+				if ( type !== J_GLOBAL ) {
+
+					extraMesh.position.z = chain.bones[ prev ].length;
+					ar[ prev ].add( extraMesh );
+
+				} else {
+
+					b.add( extraMesh );
+
+				}
+
+			}
+
+		} else {
+
+			if ( extraMesh !== null ) b.add( extraMesh );
+
+		}
+
+		return b;
+
+	},
+
+	clearAllBoneMesh: function () {
+
+		if ( ! this.isWithMesh ) return;
+
+		var i, j, b;
+
+		i = this.meshChains.length;
+		while ( i -- ) {
+
+			j = this.meshChains[ i ].length;
+			while ( j -- ) {
+
+				b = this.meshChains[ i ][ j ];
+				this.scene.remove( b );
+				b.geometry.dispose();
+				b.material.dispose();
+
+			}
+
+			this.meshChains[ i ] = [];
+
+		}
+
+		this.meshChains = [];
+
+	}
 
 } );
 

@@ -1,13 +1,13 @@
 var Tools = {
 
-	error: function (str) {
+	error: function ( str ) {
 
-		console.error( str )
+		console.error( str );
 
 	},
 
 
-}
+};
 
 
 export { Tools };

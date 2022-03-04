@@ -3604,9 +3604,7 @@ Object.assign( Structure2D.prototype, {
         var m = new THREE.MeshStandardMaterial({ color:color, wireframe:false, shadowSide:false });
         //m.color.setHex( color );
 
-        var m2 = new THREE.MeshBasicMaterial({ wireframe : true });
-
-        var extraMesh;
+        new THREE.MeshBasicMaterial({ wireframe : true });
 
         /*var type = bone.getJoint().type;
         switch(type){
@@ -3651,7 +3649,6 @@ Object.assign( Structure2D.prototype, {
         b.receiveShadow = true;
         
         this.scene.add( b );
-        if( extraMesh ) b.add( extraMesh );
         return b;
 
     },
@@ -3852,4 +3849,4 @@ Object.assign( HISolver.prototype, {
 
 } );
 
-export { _Math, V2, V3, M3, Joint3D, Bone3D, Chain3D, Structure3D, Joint2D, Bone2D, Chain2D, Structure2D, IKSolver, HISolver, REVISION, PRECISION, PRECISION_DEG, MAX_VALUE, PI, TORAD, TODEG, NONE, GLOBAL_ROTOR, GLOBAL_HINGE, LOCAL_ROTOR, LOCAL_HINGE, GLOBAL_ABSOLUTE, LOCAL_RELATIVE, LOCAL_ABSOLUTE, J_BALL, J_LOCAL, J_GLOBAL, START, END, X_AXE, Y_AXE, Z_AXE, X_NEG, Y_NEG, Z_NEG, UP, DOWN, LEFT, RIGHT };
+export { Bone2D, Bone3D, Chain2D, Chain3D, DOWN, END, GLOBAL_ABSOLUTE, GLOBAL_HINGE, GLOBAL_ROTOR, HISolver, IKSolver, J_BALL, J_GLOBAL, J_LOCAL, Joint2D, Joint3D, LEFT, LOCAL_ABSOLUTE, LOCAL_HINGE, LOCAL_RELATIVE, LOCAL_ROTOR, M3, MAX_VALUE, NONE, PI, PRECISION, PRECISION_DEG, REVISION, RIGHT, START, Structure2D, Structure3D, TODEG, TORAD, UP, V2, V3, X_AXE, X_NEG, Y_AXE, Y_NEG, Z_AXE, Z_NEG, _Math };

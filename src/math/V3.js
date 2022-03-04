@@ -1,8 +1,8 @@
-function V3( x, y, z ){
+function V3( x, y, z ) {
 
-    this.x = x || 0;
-    this.y = y || 0;
-    this.z = z || 0;
+	this.x = x || 0;
+	this.y = y || 0;
+	this.z = z || 0;
 
 }
 
@@ -10,7 +10,7 @@ Object.assign( V3.prototype, {
 
 	isVector3: true,
 
-	set: function( x, y, z ){
+	set: function ( x, y, z ) {
 
 	    this.x = x || 0;
 	    this.y = y || 0;
@@ -35,10 +35,10 @@ Object.assign( V3.prototype, {
 
 	abs: function () {
 
-		return new V3( 
-			this.x < 0 ? -this.x : this.x, 
-			this.y < 0 ? -this.y : this.y, 
-			this.z < 0 ? -this.z : this.z
+		return new V3(
+			this.x < 0 ? - this.x : this.x,
+			this.y < 0 ? - this.y : this.y,
+			this.z < 0 ? - this.z : this.z
 		);
 
 	},
@@ -70,7 +70,7 @@ Object.assign( V3.prototype, {
 	normalised: function () {
 
 	    return new V3( this.x, this.y, this.z ).normalize();
-	
+
 	},
 
 	add: function ( v ) {
@@ -106,15 +106,15 @@ Object.assign( V3.prototype, {
 	divideBy: function ( s ) {
 
 	    return new V3( this.x / s, this.y / s, this.z / s );
-	
+
 	},
 
 	multiply: function ( s ) {
 
 	    return new V3( this.x * s, this.y * s, this.z * s );
-	
+
 	},
-	
+
 
 	multiplyScalar: function ( scalar ) {
 
@@ -131,7 +131,7 @@ Object.assign( V3.prototype, {
 
 	},
 
-	cross: function( v ) { 
+	cross: function ( v ) {
 
 	    return new V3( this.y * v.z - this.z * v.y, this.z * v.x - this.x * v.z, this.x * v.y - this.y * v.x );
 
@@ -150,18 +150,18 @@ Object.assign( V3.prototype, {
 
 	},
 
-	negate: function() { 
+	negate: function () {
 
-	    this.x = -this.x;
-	    this.y = -this.y;
-	    this.z = -this.z;
+	    this.x = - this.x;
+	    this.y = - this.y;
+	    this.z = - this.z;
 	    return this;
 
 	},
 
-	negated: function () { 
+	negated: function () {
 
-	    return new V3( -this.x, -this.y, -this.z );
+	    return new V3( - this.x, - this.y, - this.z );
 
 	},
 
@@ -183,9 +183,9 @@ Object.assign( V3.prototype, {
 	approximatelyEquals: function ( v, t ) {
 
 	    if ( t < 0 ) return false;
-	    var xDiff = Math.abs(this.x - v.x);
-	    var yDiff = Math.abs(this.y - v.y);
-	    var zDiff = Math.abs(this.z - v.z);
+	    var xDiff = Math.abs( this.x - v.x );
+	    var yDiff = Math.abs( this.y - v.y );
+	    var zDiff = Math.abs( this.z - v.z );
 	    return ( xDiff < t && yDiff < t && zDiff < t );
 
 	},
@@ -202,38 +202,40 @@ Object.assign( V3.prototype, {
 	/*projectOnPlane_old: function ( planeNormal ) {
 
 	    if ( planeNormal.length() <= 0 ){ Tools.error("Plane normal cannot be a zero vector."); return; }
-	        
+
         // Projection of vector b onto plane with normal n is defined as: b - ( b.n / ( |n| squared )) * n
-        // Note: |n| is length or magnitude of the vector n, NOT its (component-wise) absolute value        
+        // Note: |n| is length or magnitude of the vector n, NOT its (component-wise) absolute value
         var b = this.normalised();
-        var n = planeNormal.normalised();   
+        var n = planeNormal.normalised();
 
         return b.min( n.times( _Math.dotProduct( b, planeNormal ) ) ).normalize();
 
 	},*/
 
-	rotate: function( angle, axe ) {
+	rotate: function ( angle, axe ) {
 
 		var cos = Math.cos( angle );
 		var sin = Math.sin( angle );
 		var x, y, z;
 
-		switch ( axe ){
+		switch ( axe ) {
+
 			case 'X':
-			x = this.x;
-			y = this.y * cos - this.z * sin;
-			z = this.y * sin + this.z * cos;
-			break
+				x = this.x;
+				y = this.y * cos - this.z * sin;
+				z = this.y * sin + this.z * cos;
+				break;
 			case 'Y':
-			x = this.z * sin + this.x * cos;
-			y = this.y;
-			z = this.z * cos - this.x * sin;
-			break
+				x = this.z * sin + this.x * cos;
+				y = this.y;
+				z = this.z * cos - this.x * sin;
+				break;
 			case 'Z':
-			x = this.x * cos - this.y * sin;
-			y = this.x * sin + this.y * cos;
-			z = this.z;
-			break
+				x = this.x * cos - this.y * sin;
+				y = this.x * sin + this.y * cos;
+				z = this.z;
+				break;
+
 		}
 
 		this.x = x;
@@ -316,18 +318,18 @@ Object.assign( V3.prototype, {
 
 	/////
 
-	sign: function( v, normal ) {
+	sign: function ( v, normal ) {
 
 		var s = this.cross( v ).dot( normal );
-		return s >= 0 ? 1 : -1;
+		return s >= 0 ? 1 : - 1;
 
 	},
 
 	angleTo: function ( v ) {
 
-		var a = this.dot(v) / Math.sqrt( this.lengthSq() * v.lengthSq() );
-		if(a <= -1) return Math.PI;
-		if(a >= 1) return 0;
+		var a = this.dot( v ) / Math.sqrt( this.lengthSq() * v.lengthSq() );
+		if ( a <= - 1 ) return Math.PI;
+		if ( a >= 1 ) return 0;
 		return Math.acos( a );
 
 	},
@@ -336,29 +338,32 @@ Object.assign( V3.prototype, {
 
 		var a = this.angleTo( v );
 		var s = this.sign( v, normal );
-		return s === 1 ? a : -a;
-		
+		return s === 1 ? a : - a;
+
 	},
 
-	constrainedUV: function( referenceAxis, rotationAxis, mtx, min, max ) {
+	constrainedUV: function ( referenceAxis, rotationAxis, mtx, min, max ) {
 
-        var angle = referenceAxis.getSignedAngle( this, rotationAxis );
-        if( angle > max ) this.copy( mtx.rotateAboutAxis( referenceAxis, max, rotationAxis ) );
-        if( angle < min ) this.copy( mtx.rotateAboutAxis( referenceAxis, min, rotationAxis ) );
-        return this;
+		var angle = referenceAxis.getSignedAngle( this, rotationAxis );
+		if ( angle > max ) this.copy( mtx.rotateAboutAxis( referenceAxis, max, rotationAxis ) );
+		if ( angle < min ) this.copy( mtx.rotateAboutAxis( referenceAxis, min, rotationAxis ) );
+		return this;
 
-    },
+	},
 
-    limitAngle: function( base, mtx, max ) {
+	limitAngle: function ( base, mtx, max ) {
 
-        var angle = base.angleTo( this );
-        if( angle > max ){ 
-        	var correctionAxis = base.normalised().cross(this).normalize();
+		var angle = base.angleTo( this );
+		if ( angle > max ) {
+
+        	var correctionAxis = base.normalised().cross( this ).normalize();
         	this.copy( mtx.rotateAboutAxis( base, max, correctionAxis ) );
-        }
-        return this;
 
-    },
+		}
+
+		return this;
+
+	},
 
 
 } );

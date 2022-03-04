@@ -1,79 +1,79 @@
 import { J_LOCAL, J_GLOBAL, PI, TORAD } from '../constants.js';
 
-function Joint2D( clockwise, antiClockwise, coordSystem ){
+function Joint2D( clockwise, antiClockwise, coordSystem ) {
 
-    this.coordinateSystem = coordSystem || J_LOCAL;
+	this.coordinateSystem = coordSystem || J_LOCAL;
 
-    if( clockwise < 0 ) clockwise *= -1;
+	if ( clockwise < 0 ) clockwise *= - 1;
 
-    this.min = clockwise !== undefined ? -clockwise * TORAD : -PI;
-    this.max = antiClockwise !== undefined ? antiClockwise * TORAD : PI;
-    
+	this.min = clockwise !== undefined ? - clockwise * TORAD : - PI;
+	this.max = antiClockwise !== undefined ? antiClockwise * TORAD : PI;
+
 }
 
 Object.assign( Joint2D.prototype, {
 
-    isJoint2D: true,
+	isJoint2D: true,
 
-    clone: function () {
+	clone: function () {
 
-        var j = new Joint2D();
+		var j = new Joint2D();
 
-        j.coordinateSystem = this.coordinateSystem;
-        j.max = this.max;
-        j.min = this.min;
+		j.coordinateSystem = this.coordinateSystem;
+		j.max = this.max;
+		j.min = this.min;
 
-        return j;
+		return j;
 
-    },
+	},
 
-    validateAngle: function ( a ) {
+	validateAngle: function ( a ) {
 
-        a = a < 0 ? 0 : a;
-        a = a > 180 ? 180 : a;
-        return a;
+		a = a < 0 ? 0 : a;
+		a = a > 180 ? 180 : a;
+		return a;
 
-    },
+	},
 
-    // SET
+	// SET
 
-    set: function ( joint ) {
+	set: function ( joint ) {
 
-        this.max = joint.max;
-        this.min = joint.min;
-        this.coordinateSystem = joint.coordinateSystem;
+		this.max = joint.max;
+		this.min = joint.min;
+		this.coordinateSystem = joint.coordinateSystem;
 
-    },
+	},
 
-    setClockwiseConstraintDegs: function ( angle ) {
+	setClockwiseConstraintDegs: function ( angle ) {
 
-        // 0 to -180 degrees represents clockwise rotation
-        if( angle < 0 ) angle *= -1;
-        this.min = - (this.validateAngle( angle ) * TORAD);
-        
-    },
+		// 0 to -180 degrees represents clockwise rotation
+		if ( angle < 0 ) angle *= - 1;
+		this.min = - ( this.validateAngle( angle ) * TORAD );
 
-    setAnticlockwiseConstraintDegs: function ( angle ) {
+	},
 
-        // 0 to 180 degrees represents anti-clockwise rotation
-        this.max = this.validateAngle( angle ) * TORAD;
-        
-    },
+	setAnticlockwiseConstraintDegs: function ( angle ) {
 
-    setConstraintCoordinateSystem: function ( coordSystem ) {
+		// 0 to 180 degrees represents anti-clockwise rotation
+		this.max = this.validateAngle( angle ) * TORAD;
 
-        this.coordinateSystem = coordSystem;
+	},
 
-    },
+	setConstraintCoordinateSystem: function ( coordSystem ) {
+
+		this.coordinateSystem = coordSystem;
+
+	},
 
 
-    // GET
+	// GET
 
-    getConstraintCoordinateSystem: function () {
+	getConstraintCoordinateSystem: function () {
 
-        return this.coordinateSystem;
+		return this.coordinateSystem;
 
-    },
+	},
 
 } );
 
