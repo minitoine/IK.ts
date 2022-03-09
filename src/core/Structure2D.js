@@ -3,26 +3,26 @@ import { _Math } from '../math/Math.js';
 import { V2 } from '../math/V2.js';
 import { Tools } from './Tools.js';
 
-function Structure2D( scene ) {
+export class Structure2D {
 
-	this.fixedBaseMode = true;
+	constructor( scene ) {
 
-	this.chains = [];
-	this.meshChains = [];
-	this.targets = [];
-	this.numChains = 0;
+		this.isStructure2D = true;
 
-	this.scene = scene || null;
+		this.fixedBaseMode = true;
 
-	this.isWithMesh = false;
+		this.chains = [];
+		this.meshChains = [];
+		this.targets = [];
+		this.numChains = 0;
 
-}
+		this.scene = scene || null;
 
-Object.assign( Structure2D.prototype, {
+		this.isWithMesh = false;
 
-	isStructure2D: true,
+	}
 
-	update: function () {
+	update() {
 
 		//console.log('up')
 
@@ -106,9 +106,9 @@ Object.assign( Structure2D.prototype, {
 
 		}
 
-	},
+	}
 
-	setFixedBaseMode: function ( value ) {
+	setFixedBaseMode( value ) {
 
 		// Update our flag and set the fixed base mode on the first (i.e. 0th) chain in this structure.
 		this.fixedBaseMode = value;
@@ -121,9 +121,9 @@ Object.assign( Structure2D.prototype, {
 		}
 		//this.chains[0].setFixedBaseMode( this.fixedBaseMode );
 
-	},
+	}
 
-	clear: function () {
+	clear() {
 
 		this.clearAllBoneMesh();
 
@@ -140,9 +140,9 @@ Object.assign( Structure2D.prototype, {
 		this.meshChains = [];
 		this.targets = [];
 
-	},
+	}
 
-	add: function ( chain, target, meshBone ) {
+	add( chain, target, meshBone ) {
 
 		this.chains.push( chain );
 		this.numChains ++;
@@ -154,9 +154,9 @@ Object.assign( Structure2D.prototype, {
 
 		if ( meshBone ) this.addChainMeshs( chain );
 
-	},
+	}
 
-	remove: function ( id ) {
+	remove( id ) {
 
 		this.chains[ id ].clear();
 		this.chains.splice( id, 1 );
@@ -164,7 +164,7 @@ Object.assign( Structure2D.prototype, {
 		this.targets.splice( id, 1 );
 		this.numChains --;
 
-	},
+	}
 
 	/*setFixedBaseMode:function( fixedBaseMode ){
         for ( var i = 0; i < this.numChains; i++) {
@@ -172,19 +172,19 @@ Object.assign( Structure2D.prototype, {
         }
     },*/
 
-	getNumChains: function () {
+	getNumChains() {
 
 		return this.numChains;
 
-	},
+	}
 
-	getChain: function ( id ) {
+	getChain( id ) {
 
 		return this.chains[ id ];
 
-	},
+	}
 
-	connectChain: function ( Chain, chainNumber, boneNumber, point, target, meshBone, color ) {
+	connectChain( Chain, chainNumber, boneNumber, point, target, meshBone, color ) {
 
 		var c = chainNumber;
 		var n = boneNumber;
@@ -236,11 +236,11 @@ Object.assign( Structure2D.prototype, {
 
 		this.add( chain, target, meshBone );
 
-	},
+	}
 
 	// 3D THREE
 
-	addChainMeshs: function ( chain, id ) {
+	addChainMeshs( chain, id ) {
 
 		this.isWithMesh = true;
 
@@ -255,9 +255,9 @@ Object.assign( Structure2D.prototype, {
 
 		this.meshChains.push( meshBone );
 
-	},
+	}
 
-	addBoneMesh: function ( bone ) {
+	addBoneMesh( bone ) {
 
 		var size = bone.length;
 		var color = bone.color;
@@ -321,9 +321,9 @@ Object.assign( Structure2D.prototype, {
 		if ( extraMesh ) b.add( extraMesh );
 		return b;
 
-	},
+	}
 
-	clearAllBoneMesh: function () {
+	clearAllBoneMesh() {
 
 		if ( ! this.isWithMesh ) return;
 
@@ -350,6 +350,4 @@ Object.assign( Structure2D.prototype, {
 
 	}
 
-} );
-
-export { Structure2D };
+}

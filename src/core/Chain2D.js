@@ -4,50 +4,50 @@ import { V2 } from '../math/V2.js';
 import { Bone2D } from './Bone2D.js';
 import { Tools } from './Tools.js';
 
-function Chain2D( color ) {
+export class Chain2D {
 
-	this.tmpTarget = new V2();
+	constuctor( color ) {
 
-	this.bones = [];
-	this.name = '';
+		this.isChain2D = true;
 
-	this.solveDistanceThreshold = 1.0;
-	this.minIterationChange = 0.01;
-	this.maxIteration = 15;
-	this.precision = 0.001;
+		this.tmpTarget = new V2();
 
-	this.chainLength = 0;
-	this.numBones = 0;
+		this.bones = [];
+		this.name = '';
 
-	this.baseLocation = new V2();
-	this.fixedBaseMode = true;
+		this.solveDistanceThreshold = 1.0;
+		this.minIterationChange = 0.01;
+		this.maxIteration = 15;
+		this.precision = 0.001;
 
-	this.baseboneConstraintType = NONE;
+		this.chainLength = 0;
+		this.numBones = 0;
 
-	this.baseboneConstraintUV = new V2();
-	this.baseboneRelativeConstraintUV = new V2();
+		this.baseLocation = new V2();
+		this.fixedBaseMode = true;
 
-	this.lastTargetLocation = new V2( MAX_VALUE, MAX_VALUE );
-	this.lastBaseLocation = new V2( MAX_VALUE, MAX_VALUE );
+		this.baseboneConstraintType = NONE;
 
-	this.boneConnectionPoint = END;
+		this.baseboneConstraintUV = new V2();
+		this.baseboneRelativeConstraintUV = new V2();
 
-	this.currentSolveDistance = MAX_VALUE;
-	this.connectedChainNumber = - 1;
-	this.connectedBoneNumber = - 1;
+		this.lastTargetLocation = new V2( MAX_VALUE, MAX_VALUE );
+		this.lastBaseLocation = new V2( MAX_VALUE, MAX_VALUE );
 
-	this.color = color || 0xFFFFFF;
+		this.boneConnectionPoint = END;
 
-	this.embeddedTarget = new V2();
-	this.useEmbeddedTarget = false;
+		this.currentSolveDistance = MAX_VALUE;
+		this.connectedChainNumber = - 1;
+		this.connectedBoneNumber = - 1;
 
-}
+		this.color = color || 0xFFFFFF;
 
-Object.assign( Chain2D.prototype, {
+		this.embeddedTarget = new V2();
+		this.useEmbeddedTarget = false;
 
-	isChain2D: true,
+	}
 
-	clone: function () {
+	clone() {
 
 		var c = new Chain2D();
 
@@ -88,11 +88,11 @@ Object.assign( Chain2D.prototype, {
 
 		return c;
 
-	},
+	}
 
 
 
-	clear: function () {
+	clear() {
 
 		var i = this.numBones;
 		while ( i -- ) {
@@ -101,9 +101,9 @@ Object.assign( Chain2D.prototype, {
 
 		}
 
-	},
+	}
 
-	addBone: function ( bone ) {
+	addBone( bone ) {
 
 		if ( bone.color === null ) bone.setColor( this.color );
 
@@ -128,9 +128,9 @@ Object.assign( Chain2D.prototype, {
 		// Increment the number of bones in the chain and update the chain length
 		this.updateChainLength();
 
-	},
+	}
 
-	removeBone: function ( id ) {
+	removeBone( id ) {
 
 		if ( id < this.numBones ) {
 
@@ -141,9 +141,9 @@ Object.assign( Chain2D.prototype, {
 
 		}
 
-	},
+	}
 
-	addConsecutiveBone: function ( directionUV, length, clockwiseDegs, anticlockwiseDegs, color ) {
+	addConsecutiveBone( directionUV, length, clockwiseDegs, anticlockwiseDegs, color ) {
 
 		if ( this.numBones === 0 ) {
 
@@ -190,133 +190,133 @@ Object.assign( Chain2D.prototype, {
 
 		}
 
-	},
+	}
 
 
 	// -------------------------------
 	//      GET
 	// -------------------------------
 
-	getBoneConnectionPoint: function () {
+	getBoneConnectionPoint() {
 
 		return this.boneConnectionPoint;
 
-	},
+	}
 
-	getConnectedBoneNumber: function () {
+	getConnectedBoneNumber() {
 
 		return this.connectedBoneNumber;
 
-	},
+	}
 
-	getConnectedChainNumber: function () {
+	getConnectedChainNumber() {
 
 		return this.connectedChainNumber;
 
-	},
+	}
 
-	getEmbeddedTarget: function () {
+	getEmbeddedTarget() {
 
 		return this.embeddedTarget;
 
-	},
+	}
 
-	getBaseboneConstraintType: function () {
+	getBaseboneConstraintType() {
 
 		return this.baseboneConstraintType;
 
-	},
+	}
 
-	getBaseboneConstraintUV: function () {
+	getBaseboneConstraintUV() {
 
 		if ( ! ( this.baseboneConstraintType === NONE ) ) return this.baseboneConstraintUV;
 
-	},
+	}
 
-	getBaseLocation: function () {
+	getBaseLocation() {
 
 		return this.bones[ 0 ].start;
 
-	},
+	}
 
-	getEffectorLocation: function () {
+	getEffectorLocation() {
 
 		return this.bones[ this.numBones - 1 ].end;
 
-	},
+	}
 
-	getLastTargetLocation: function () {
+	getLastTargetLocation() {
 
 		return this.lastTargetLocation;
 
-	},
+	}
 
-	getLiveChainLength: function () {
+	getLiveChainLength() {
 
 		var lng = 0;
 		var i = this.numBones;
 		while ( i -- ) lng += this.bones[ i ].getLength();
 		return lng;
 
-	},
+	}
 
 
 	// -------------------------------
 	//      SET
 	// -------------------------------
 
-	setColor: function ( color ) {
+	setColor( color ) {
 
 		this.color = color;
 		var i = this.numBones;
 		while ( i -- ) this.bones[ i ].setColor( this.color );
 
-	},
+	}
 
-	setBaseboneRelativeConstraintUV: function ( constraintUV ) {
+	setBaseboneRelativeConstraintUV( constraintUV ) {
 
 		this.baseboneRelativeConstraintUV = constraintUV;
 
-	},
+	}
 
-	setConnectedBoneNumber: function ( boneNumber ) {
+	setConnectedBoneNumber( boneNumber ) {
 
 		this.connectedBoneNumber = boneNumber;
 
-	},
+	}
 
-	setConnectedChainNumber: function ( chainNumber ) {
+	setConnectedChainNumber( chainNumber ) {
 
 		this.connectedChainNumber = chainNumber;
 
-	},
+	}
 
-	setBoneConnectionPoint: function ( point ) {
+	setBoneConnectionPoint( point ) {
 
 		this.boneConnectionPoint = point;
 
-	},
+	}
 
-	setBaseboneConstraintUV: function ( constraintUV ) {
+	setBaseboneConstraintUV( constraintUV ) {
 
 		_Math.validateDirectionUV( constraintUV );
 		this.baseboneConstraintUV.copy( constraintUV.normalised() );
 
-	},
+	}
 
-	setBaseLocation: function ( baseLocation ) {
+	setBaseLocation( baseLocation ) {
 
 		this.baseLocation.copy( baseLocation );
 
-	},
+	}
 
-	setBaseboneConstraintType: function ( value ) {
+	setBaseboneConstraintType( value ) {
 
 		this.baseboneConstraintType = value;
 
-	},
+	}
 
-	setFixedBaseMode: function ( value ) {
+	setFixedBaseMode( value ) {
 
 		// Enforce that a chain connected to another chain stays in fixed base mode (i.e. it moves with the chain it's connected to instead of independently)
 		if ( ! value && this.connectedChainNumber !== - 1 ) return;
@@ -324,28 +324,28 @@ Object.assign( Chain2D.prototype, {
 		// Above conditions met? Set the fixedBaseMode
 		this.fixedBaseMode = value;
 
-	},
+	}
 
-	setMaxIterationAttempts: function ( maxIteration ) {
+	setMaxIterationAttempts( maxIteration ) {
 
 		if ( maxIteration < 1 ) return;
 		this.maxIteration = maxIteration;
 
-	},
+	}
 
-	setMinIterationChange: function ( minIterationChange ) {
+	setMinIterationChange( minIterationChange ) {
 
 		if ( minIterationChange < 0 ) return;
 		this.minIterationChange = minIterationChange;
 
-	},
+	}
 
-	setSolveDistanceThreshold: function ( solveDistance ) {
+	setSolveDistanceThreshold( solveDistance ) {
 
 		if ( solveDistance < 0 ) return;
 		this.solveDistanceThreshold = solveDistance;
 
-	},
+	}
 
 	// -------------------------------
 	//
@@ -353,18 +353,18 @@ Object.assign( Chain2D.prototype, {
 	//
 	// -------------------------------
 
-	solveForEmbeddedTarget: function () {
+	solveForEmbeddedTarget() {
 
 		if ( this.useEmbeddedTarget ) return this.solveForTarget( this.embeddedTarget );
 
-	},
+	}
 
-	resetTarget: function () {
+	resetTarget() {
 
 		this.lastBaseLocation = new V2( MAX_VALUE, MAX_VALUE );
 		this.currentSolveDistance = MAX_VALUE;
 
-	},
+	}
 
 
 	// Solve the IK chain for this target to the best of our ability.
@@ -375,7 +375,7 @@ Object.assign( Chain2D.prototype, {
 	// - A solution incrementally improves on the previous solution by less than the minIterationChange, or
 	// - The number of attempts to solve the IK chain exceeds the maxIteration.
 
-	solveForTarget: function ( t ) {
+	solveForTarget( t ) {
 
 		this.tmpTarget.set( t.x, t.y );
 		var p = this.precision;
@@ -466,7 +466,7 @@ Object.assign( Chain2D.prototype, {
 
 		return this.currentSolveDistance;
 
-	},
+	}
 
 	// -------------------------------
 	//
@@ -477,7 +477,7 @@ Object.assign( Chain2D.prototype, {
 	// Solve the IK chain for the given target using the FABRIK algorithm.
 	// retun the best solve distance found between the end-effector of this chain and the provided target.
 
-	solveIK: function ( target ) {
+	solveIK( target ) {
 
 		if ( this.numBones === 0 ) return;
 
@@ -661,18 +661,18 @@ Object.assign( Chain2D.prototype, {
 		// ...and calculate and return the distance between the current effector location and the target.
 		return this.bones[ this.numBones - 1 ].end.distanceTo( target );
 
-	},
+	}
 
-	updateChainLength: function () {
+	updateChainLength() {
 
 		// Loop over all the bones in the chain, adding the length of each bone to the mChainLength property
 		this.chainLength = 0;
 		var i = this.numBones;
 		while ( i -- ) this.chainLength += this.bones[ i ].length;
 
-	},
+	}
 
-	cloneBones: function () {
+	cloneBones() {
 
 		// Use clone to create a new Bone with the values from the source Bone.
 		var chain = [];
@@ -681,6 +681,4 @@ Object.assign( Chain2D.prototype, {
 
 	}
 
-} );
-
-export { Chain2D };
+}

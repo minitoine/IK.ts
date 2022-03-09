@@ -1,26 +1,26 @@
 import { NONE, GLOBAL_ROTOR, GLOBAL_HINGE, LOCAL_ROTOR, LOCAL_HINGE, J_BALL, J_GLOBAL, J_LOCAL, END, START } from '../constants.js';
 import { _Math } from '../math/Math.js';
 
-function Structure3D( scene ) {
+export class Structure3D {
 
-	this.fixedBaseMode = true;
+	constructor( scene ) {
 
-	this.chains = [];
-	this.meshChains = [];
-	this.targets = [];
-	this.numChains = 0;
+		this.fixedBaseMode = true;
 
-	this.scene = scene || null;
+		this.chains = [];
+		this.meshChains = [];
+		this.targets = [];
+		this.numChains = 0;
 
-	this.tmpMtx = new FIK.M3();
+		this.scene = scene || null;
 
-	this.isWithMesh = false;
+		this.tmpMtx = new FIK.M3();
 
-}
+		this.isWithMesh = false;
 
-Object.assign( Structure3D.prototype, {
+	}
 
-	update: function () {
+	update() {
 
 		var chain, mesh, bone, target;
 		var hostChainNumber;
@@ -109,9 +109,9 @@ Object.assign( Structure3D.prototype, {
 
 		}
 
-	},
+	}
 
-	clear: function () {
+	clear() {
 
 		this.clearAllBoneMesh();
 
@@ -128,9 +128,9 @@ Object.assign( Structure3D.prototype, {
 		this.meshChains = [];
 		this.targets = [];
 
-	},
+	}
 
-	add: function ( chain, target, meshBone ) {
+	add( chain, target, meshBone ) {
 
 		this.chains.push( chain );
 
@@ -139,11 +139,11 @@ Object.assign( Structure3D.prototype, {
 
 		if ( meshBone ) this.addChainMeshs( chain );
 
-	},
+	}
 
 
 
-	remove: function ( id ) {
+	remove( id ) {
 
 		this.chains[ id ].clear();
 		this.chains.splice( id, 1 );
@@ -151,9 +151,9 @@ Object.assign( Structure3D.prototype, {
 		this.targets.splice( id, 1 );
 		this.numChains --;
 
-	},
+	}
 
-	setFixedBaseMode: function ( value ) {
+	setFixedBaseMode( value ) {
 
 		this.fixedBaseMode = value;
 		var i = this.numChains, host;
@@ -164,21 +164,21 @@ Object.assign( Structure3D.prototype, {
 
 		}
 
-	},
+	}
 
-	getNumChains: function () {
+	getNumChains() {
 
 		return this.numChains;
 
-	},
+	}
 
-	getChain: function ( id ) {
+	getChain( id ) {
 
 		return this.chains[ id ];
 
-	},
+	}
 
-	connectChain: function ( Chain, chainNumber, boneNumber, point, target, meshBone, color ) {
+	connectChain( Chain, chainNumber, boneNumber, point, target, meshBone, color ) {
 
 		var c = chainNumber;
 		var n = boneNumber;
@@ -219,12 +219,12 @@ Object.assign( Structure3D.prototype, {
 
 		this.add( chain, target, meshBone );
 
-	},
+	}
 
 
 	// 3D THREE
 
-	addChainMeshs: function ( chain, id ) {
+	addChainMeshs( chain, id ) {
 
 		this.isWithMesh = true;
 
@@ -238,9 +238,9 @@ Object.assign( Structure3D.prototype, {
 
 		this.meshChains.push( meshBone );
 
-	},
+	}
 
-	addBoneMesh: function ( bone, prev, ar, chain ) {
+	addBoneMesh( bone, prev, ar, chain ) {
 
 		var size = bone.length;
 		var color = bone.color;
@@ -362,9 +362,9 @@ Object.assign( Structure3D.prototype, {
 
 		return b;
 
-	},
+	}
 
-	clearAllBoneMesh: function () {
+	clearAllBoneMesh() {
 
 		if ( ! this.isWithMesh ) return;
 
@@ -391,6 +391,4 @@ Object.assign( Structure3D.prototype, {
 
 	}
 
-} );
-
-export { Structure3D };
+}
