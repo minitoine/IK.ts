@@ -1,48 +1,62 @@
-//import { NONE, GLOBAL_ROTOR, GLOBAL_HINGE, LOCAL_ROTOR, LOCAL_HINGE, J_BALL, J_GLOBAL, J_LOCAL } from '../constants.js';
-import { _Math } from '../math/Math.js';
-import { V2 } from '../math/V2.js';
-import { Structure2D } from '../core/Structure2D.js';
-import { Chain2D } from '../core/Chain2D.js';
-import { Bone2D } from '../core/Bone2D.js';
-import { LOCAL_ABSOLUTE } from '../constants.js';
+//import { NONE, GLOBAL_ROTOR, GLOBAL_HINGE, LOCAL_ROTOR, LOCAL_HINGE, J_BALL, J_GLOBAL, J_LOCAL } from '../constants';
+import { _Math } from '../math/Math';
+import { V2 } from '../math/V2';
+import { Structure2D } from '../core/Structure2D';
+import { Chain2D } from '../core/Chain2D';
+import { Bone2D } from '../core/Bone2D';
+import { LOCAL_ABSOLUTE } from '../constants';
+import { Bone3D } from '../core/Bone3D';
+import * as THREE from 'three';
 
 
-function HISolver( o ) {
+export class HISolver {
+	static isHISolver = true;
+	startBones?: any
+	endBones?: Bone2D[] | Bone3D[]
+	scene: any;
+	target: any;
+	goal: any;
+	swivelAngle: number;
+	iteration: number;
+	thresholds: { position: number, rotation: number }
+	solver: Structure2D;
+	bones: any[];
+	numBones: number;
+	rotation: any[];
+	fakeBone: Bone2D;
+	angles: any;
+
+	
+	constructor( o: any ) {
+			
+		this.startBones = null;
+		this.endBones = null;
+
+		this.scene = o.scene;
+
+		this.target = null;
+		this.goal = null;
+		this.swivelAngle = 0;
+
+		this.iteration = 15;
+
+		this.thresholds = { position: 0.1, rotation: 0.1 };
+
+		this.solver = new Structure2D( this.scene );
+		//this.chain = null;
+
+		this.bones = [];
+		this.numBones = 0;
+
+		this.rotation = [];
 
 
 
-	this.startBones = null;
-	this.endBones = null;
+		this.initStructure( o );
 
-	this.scene = o.scene;
+	}
 
-	this.target = null;
-	this.goal = null;
-	this.swivelAngle = 0;
-
-	this.iteration = 15;
-
-	this.thresholds = { position: 0.1, rotation: 0.1 };
-
-	this.solver = new Structure2D( this.scene );
-	//this.chain = null;
-
-	this.bones = [];
-	this.numBones = 0;
-
-	this.rotation = [];
-
-
-
-	this.initStructure( o );
-
-}
-
-Object.assign( HISolver.prototype, {
-
-	isHISolver: true,
-
-	initStructure: function ( o ) {
+	initStructure( o: any ) {
 
 		this.startBones = o.start;
 		this.endBones = o.end;
@@ -67,9 +81,9 @@ Object.assign( HISolver.prototype, {
 
 		}
 
-	},
+	}
 
-	createChain: function () {
+	createChain() {
 
 		this.numBones = this.bones.length;
 		var chain = new Chain2D();
@@ -125,9 +139,9 @@ Object.assign( HISolver.prototype, {
 	    //console.log( lengths );
 	    //console.log( this.bones, this.target, this.solver.chains[0].bones );
 
-	},
+	}
 
-	update: function () {
+	update() {
 
 		this.solver.update();
 
@@ -156,6 +170,4 @@ Object.assign( HISolver.prototype, {
 
 	}
 
-} );
-
-export { HISolver };
+}

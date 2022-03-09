@@ -1,30 +1,33 @@
-import { _Math } from './Math.js';
-import { V3 } from './V3.js';
+import { _Math } from './Math';
+import { V3 } from './V3';
 
 
-function M3() {
+export class M3 {
+	static isMatrix3 = true;
+	elements: number[];
 
-	this.elements = [
+	constructor() {
 
-		1, 0, 0,
-		0, 1, 0,
-		0, 0, 1
+		this.elements = [
 
-	];
+			1, 0, 0,
+			0, 1, 0,
+			0, 0, 1
 
-	if ( arguments.length > 0 ) {
+		];
 
-		console.error( 'M3: the constructor no longer reads arguments. use .set() instead.' );
+		if ( arguments.length > 0 ) {
+
+			console.error( 'M3: the constructor no longer reads arguments. use .set() instead.' );
+
+		}
 
 	}
 
-}
 
-Object.assign( M3.prototype, {
-
-	isMatrix3: true,
-
-	set: function ( n11, n12, n13, n21, n22, n23, n31, n32, n33 ) {
+	set(n11: number, n12: number, n13: number,
+		n21: number, n22: number, n23: number,
+		n31: number, n32: number, n33: number) {
 
 		var te = this.elements;
 
@@ -34,9 +37,9 @@ Object.assign( M3.prototype, {
 
 		return this;
 
-	},
+	}
 
-	identity: function () {
+	identity() {
 
 		this.set(
 
@@ -48,9 +51,9 @@ Object.assign( M3.prototype, {
 
 		return this;
 
-	},
+	}
 
-	setV3: function ( xAxis, yAxis, zAxis ) {
+	setV3( xAxis: V3, yAxis: V3, zAxis: V3 ) {
 
 		var te = this.elements;
 
@@ -68,9 +71,9 @@ Object.assign( M3.prototype, {
 
 	    return this;
 
-	},
+	}
 
-	transpose: function () {
+	transpose() {
 
 		var tmp, m = this.elements;
 
@@ -80,9 +83,9 @@ Object.assign( M3.prototype, {
 
 		return this;
 
-	},
+	}
 
-	createRotationMatrix: function ( referenceDirection ) {
+	createRotationMatrix( referenceDirection: V3 ) {
 
 	    var zAxis = referenceDirection;//normalised();
 	    var xAxis = new V3( 1, 0, 0 );
@@ -105,9 +108,9 @@ Object.assign( M3.prototype, {
 
 	    return this.setV3( xAxis, yAxis, zAxis );
 
-	},
+	}
 
-	rotateAboutAxis: function ( v, angle, rotationAxis ) {
+	rotateAboutAxis( v: V3, angle: number, rotationAxis: V3 ) {
 
 	    var sinTheta = Math.sin( angle );
 	    var cosTheta = Math.cos( angle );
@@ -138,8 +141,6 @@ Object.assign( M3.prototype, {
 	    // Multiply the source by the rotation matrix we just created to perform the rotation
 	    return v.clone().applyM3( this );
 
-	},
+	}
 
-} );
-
-export { M3 };
+}

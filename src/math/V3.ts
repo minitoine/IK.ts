@@ -1,39 +1,45 @@
-function V3( x, y, z ) {
+import { M3 } from "./M3";
+import { V2 } from "./V2";
 
-	this.x = x || 0;
-	this.y = y || 0;
-	this.z = z || 0;
+export class V3 {
+	static isVector3 = true;
+	x: number;
+	y: number;
+	z: number;
 
-}
+	constructor( x?: number, y?: number, z?: number ) {
 
-Object.assign( V3.prototype, {
+		this.x = x || 0;
+		this.y = y || 0;
+		this.z = z || 0;
 
-	isVector3: true,
+	}
 
-	set: function ( x, y, z ) {
+
+	set( x: number, y: number, z: number ) {
 
 	    this.x = x || 0;
 	    this.y = y || 0;
 	    this.z = z || 0;
 	    return this;
 
-	},
+	}
 
-	distanceTo: function ( v ) {
+	distanceTo( v: V3 ) {
 
 		return Math.sqrt( this.distanceToSquared( v ) );
 
-	},
+	}
 
-	distanceToSquared: function ( v ) {
+	distanceToSquared( v: V3 ) {
 
 		var dx = this.x - v.x, dy = this.y - v.y, dz = this.z - v.z;
 
 		return dx * dx + dy * dy + dz * dz;
 
-	},
+	}
 
-	abs: function () {
+	abs() {
 
 		return new V3(
 			this.x < 0 ? - this.x : this.x,
@@ -41,103 +47,103 @@ Object.assign( V3.prototype, {
 			this.z < 0 ? - this.z : this.z
 		);
 
-	},
+	}
 
-	dot: function ( v ) {
+	dot( v: V3 ) {
 
 		return this.x * v.x + this.y * v.y + this.z * v.z;
 
-	},
+	}
 
-	length: function () {
+	length() {
 
 		return Math.sqrt( this.x * this.x + this.y * this.y + this.z * this.z );
 
-	},
+	}
 
-	lengthSq: function () {
+	lengthSq() {
 
 		return this.x * this.x + this.y * this.y + this.z * this.z;
 
-	},
+	}
 
-	normalize: function () {
+	normalize() {
 
 		return this.divideScalar( this.length() || 1 );
 
-	},
+	}
 
-	normalised: function () {
+	normalised() {
 
 	    return new V3( this.x, this.y, this.z ).normalize();
 
-	},
+	}
 
-	add: function ( v ) {
+	add( v: V3 ) {
 
 		this.x += v.x;
 		this.y += v.y;
 		this.z += v.z;
 	    return this;
 
-	},
+	}
 
-	min: function ( v ) {
+	min( v: V3 ) {
 
 		this.x -= v.x;
 		this.y -= v.y;
 		this.z -= v.z;
 	    return this;
 
-	},
+	}
 
-	plus: function ( v ) {
+	plus( v: V3 ) {
 
 	    return new V3( this.x + v.x, this.y + v.y, this.z + v.z );
 
-	},
+	}
 
-	minus: function ( v ) {
+	minus( v: V3 ) {
 
 	    return new V3( this.x - v.x, this.y - v.y, this.z - v.z );
 
-	},
+	}
 
-	divideBy: function ( s ) {
+	divideBy( s: number ) {
 
 	    return new V3( this.x / s, this.y / s, this.z / s );
 
-	},
+	}
 
-	multiply: function ( s ) {
+	multiply( s: number ) {
 
 	    return new V3( this.x * s, this.y * s, this.z * s );
 
-	},
+	}
 
 
-	multiplyScalar: function ( scalar ) {
+	multiplyScalar( scalar: number ) {
 
 		this.x *= scalar;
 		this.y *= scalar;
 		this.z *= scalar;
 		return this;
 
-	},
+	}
 
-	divideScalar: function ( scalar ) {
+	divideScalar( scalar: number ) {
 
 		return this.multiplyScalar( 1 / scalar );
 
-	},
+	}
 
-	cross: function ( v ) {
+	cross( v: V3 ) {
 
 	    return new V3( this.y * v.z - this.z * v.y, this.z * v.x - this.x * v.z, this.x * v.y - this.y * v.x );
 
-	},
+	}
 
-	crossVectors: function ( a, b ) {
+	crossVectors( a: V3, b: V3 ) {
 
 		var ax = a.x, ay = a.y, az = a.z;
 		var bx = b.x, by = b.y, bz = b.z;
@@ -148,39 +154,39 @@ Object.assign( V3.prototype, {
 
 		return this;
 
-	},
+	}
 
-	negate: function () {
+	negate() {
 
 	    this.x = - this.x;
 	    this.y = - this.y;
 	    this.z = - this.z;
 	    return this;
 
-	},
+	}
 
-	negated: function () {
+	negated() {
 
 	    return new V3( - this.x, - this.y, - this.z );
 
-	},
+	}
 
-	clone: function () {
+	clone() {
 
 	    return new V3( this.x, this.y, this.z );
 
-	},
+	}
 
-	copy: function ( v ) {
+	copy( v: V3 ) {
 
 	    this.x = v.x;
 	    this.y = v.y;
 	    this.z = v.z;
 	    return this;
 
-	},
+	}
 
-	approximatelyEquals: function ( v, t ) {
+	approximatelyEquals( v: V3, t: number ) {
 
 	    if ( t < 0 ) return false;
 	    var xDiff = Math.abs( this.x - v.x );
@@ -188,18 +194,18 @@ Object.assign( V3.prototype, {
 	    var zDiff = Math.abs( this.z - v.z );
 	    return ( xDiff < t && yDiff < t && zDiff < t );
 
-	},
+	}
 
-	zero: function () {
+	zero() {
 
 	    this.x = 0;
 	    this.y = 0;
 	    this.z = 0;
 	    return this;
 
-	},
+	}
 
-	/*projectOnPlane_old: function ( planeNormal ) {
+	/*projectOnPlane_old( planeNormal ) {
 
 	    if ( planeNormal.length() <= 0 ){ Tools.error("Plane normal cannot be a zero vector."); return; }
 
@@ -210,9 +216,9 @@ Object.assign( V3.prototype, {
 
         return b.min( n.times( _Math.dotProduct( b, planeNormal ) ) ).normalize();
 
-	},*/
+	}*/
 
-	rotate: function ( angle, axe ) {
+	rotate( angle: number, axe: 'X' | 'Y' | 'Z' ) {
 
 		var cos = Math.cos( angle );
 		var sin = Math.sin( angle );
@@ -243,22 +249,22 @@ Object.assign( V3.prototype, {
 		this.z = z;
 		return this;
 
-	},
+	}
 
 	// added
 
-	projectOnVector: function ( vector ) {
+	projectOnVector( vector: V3 ) {
 
 		var scalar = vector.dot( this ) / vector.lengthSq();
 		return this.copy( vector ).multiplyScalar( scalar );
 
-	},
+	}
 
-	projectOnPlane: function () {
+	get projectOnPlane() {
 
 		var v1 = new V3();
 
-		return function projectOnPlane( planeNormal ) {
+		return function projectOnPlane( planeNormal: V3 ) {
 
 			v1.copy( this ).projectOnVector( planeNormal.normalised() );
 
@@ -266,9 +272,9 @@ Object.assign( V3.prototype, {
 
 		};
 
-	}(),
+	}
 
-	applyM3: function ( m ) {
+	applyM3( m: M3 ) {
 
 		var x = this.x, y = this.y, z = this.z;
 		var e = m.elements;
@@ -279,9 +285,9 @@ Object.assign( V3.prototype, {
 
 		return this.normalize();
 
-	},
+	}
 
-	applyMatrix3: function ( m ) {
+	applyMatrix3( m: M3 ) {
 
 		var x = this.x, y = this.y, z = this.z;
 		var e = m.elements;
@@ -292,9 +298,9 @@ Object.assign( V3.prototype, {
 
 		return this;
 
-	},
+	}
 
-	applyQuaternion: function ( q ) {
+	applyQuaternion( q: V3 & { w: number } ) {
 
 		var x = this.x, y = this.y, z = this.z;
 		var qx = q.x, qy = q.y, qz = q.z, qw = q.w;
@@ -314,44 +320,44 @@ Object.assign( V3.prototype, {
 
 		return this;
 
-	},
+	}
 
 	/////
 
-	sign: function ( v, normal ) {
+	sign( v: V3, normal: V3 ) {
 
 		var s = this.cross( v ).dot( normal );
 		return s >= 0 ? 1 : - 1;
 
-	},
+	}
 
-	angleTo: function ( v ) {
+	angleTo( v: V3 ) {
 
 		var a = this.dot( v ) / Math.sqrt( this.lengthSq() * v.lengthSq() );
 		if ( a <= - 1 ) return Math.PI;
 		if ( a >= 1 ) return 0;
 		return Math.acos( a );
 
-	},
+	}
 
-	getSignedAngle: function ( v, normal ) {
+	getSignedAngle( v: V3, normal: V3 ) {
 
 		var a = this.angleTo( v );
 		var s = this.sign( v, normal );
 		return s === 1 ? a : - a;
 
-	},
+	}
 
-	constrainedUV: function ( referenceAxis, rotationAxis, mtx, min, max ) {
+	constrainedUV( referenceAxis: V3, rotationAxis: V3, mtx: M3, min: number, max: number ) {
 
 		var angle = referenceAxis.getSignedAngle( this, rotationAxis );
 		if ( angle > max ) this.copy( mtx.rotateAboutAxis( referenceAxis, max, rotationAxis ) );
 		if ( angle < min ) this.copy( mtx.rotateAboutAxis( referenceAxis, min, rotationAxis ) );
 		return this;
 
-	},
+	}
 
-	limitAngle: function ( base, mtx, max ) {
+	limitAngle( base: V3, mtx: M3, max: number ) {
 
 		var angle = base.angleTo( this );
 		if ( angle > max ) {
@@ -363,10 +369,7 @@ Object.assign( V3.prototype, {
 
 		return this;
 
-	},
+	}
 
 
-} );
-
-export { V3 };
-
+}

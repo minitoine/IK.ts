@@ -1,11 +1,17 @@
-import { V3 } from '../math/V3.js';
-import { J_BALL, J_GLOBAL, J_LOCAL, PI, TORAD } from '../constants.js';
+import { V3 } from '../math/V3';
+import { JointType, J_BALL, J_GLOBAL, J_LOCAL, PI, TORAD } from '../constants';
 
 export class Joint3D {
+	static isJoint3D = true;
+	rotor: number;
+	min: number;
+	max: number;
+	freeHinge: boolean;
+	rotationAxisUV: V3;
+	referenceAxisUV: V3;
+	type: JointType;
 
 	constructor() {
-
-		this.isJoint3D = true;
 
 		this.rotor = PI;
 		this.min = - PI;
@@ -42,7 +48,7 @@ export class Joint3D {
 
 	}
 
-	validateAngle( a ) {
+	validateAngle( a: number ) {
 
 		a = a < 0 ? 0 : a;
 		a = a > 180 ? 180 : a;
@@ -50,7 +56,7 @@ export class Joint3D {
 
 	}
 
-	setAsBallJoint( angle ) {
+	setAsBallJoint( angle: number ) {
 
 		this.rotor = this.validateAngle( angle ) * TORAD;
 		this.type = J_BALL;
@@ -59,7 +65,7 @@ export class Joint3D {
 
 	// Specify this joint to be a hinge with the provided settings
 
-	setHinge( type, rotationAxis, clockwise, anticlockwise, referenceAxis ) {
+	setHinge( type: JointType, rotationAxis: V3, clockwise: number, anticlockwise: number, referenceAxis: V3 ) {
 
 		this.type = type;
 		if ( clockwise < 0 ) clockwise *= - 1;
@@ -89,13 +95,13 @@ export class Joint3D {
 
 	// SET
 
-	setBallJointConstraintDegs( angle ) {
+	setBallJointConstraintDegs( angle: number ) {
 
 		this.rotor = this.validateAngle( angle ) * TORAD;
 
 	}
 
-	setHingeClockwise( angle ) {
+	setHingeClockwise( angle: number ) {
 
 		if ( angle < 0 ) angle *= - 1;
 		this.min = - this.validateAngle( angle ) * TORAD;
@@ -103,7 +109,7 @@ export class Joint3D {
 
 	}
 
-	setHingeAnticlockwise( angle ) {
+	setHingeAnticlockwise( angle: number ) {
 
 		this.max = this.validateAngle( angle ) * TORAD;
 		this.testAngle();

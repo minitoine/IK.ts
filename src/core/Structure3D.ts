@@ -1,9 +1,22 @@
-import { NONE, GLOBAL_ROTOR, GLOBAL_HINGE, LOCAL_ROTOR, LOCAL_HINGE, J_BALL, J_GLOBAL, J_LOCAL, END, START } from '../constants.js';
-import { _Math } from '../math/Math.js';
+import { NONE, GLOBAL_ROTOR, GLOBAL_HINGE, LOCAL_ROTOR, LOCAL_HINGE, J_BALL, J_GLOBAL, J_LOCAL, END, START } from '../constants';
+import { M3 } from '../math/M3';
+import { _Math } from '../math/Math';
+import { V3 } from '../math/V3';
+import { Bone3D } from './Bone3D';
+import { Chain3D } from './Chain3D';
+import * as THREE from 'three';
 
 export class Structure3D {
+	fixedBaseMode: boolean;
+	chains: Chain3D[];
+	meshChains: any[];
+	targets: any[];
+	numChains: number;
+	scene: any;
+	tmpMtx: M3;
+	isWithMesh: boolean;
 
-	constructor( scene ) {
+	constructor( scene: any ) {
 
 		this.fixedBaseMode = true;
 
@@ -14,7 +27,7 @@ export class Structure3D {
 
 		this.scene = scene || null;
 
-		this.tmpMtx = new FIK.M3();
+		this.tmpMtx = new M3();
 
 		this.isWithMesh = false;
 
@@ -130,7 +143,7 @@ export class Structure3D {
 
 	}
 
-	add( chain, target, meshBone ) {
+	add( chain: Chain3D, target: V3, meshBone: Bone3D ) {
 
 		this.chains.push( chain );
 
@@ -143,7 +156,7 @@ export class Structure3D {
 
 
 
-	remove( id ) {
+	remove( id: number ) {
 
 		this.chains[ id ].clear();
 		this.chains.splice( id, 1 );
@@ -153,7 +166,7 @@ export class Structure3D {
 
 	}
 
-	setFixedBaseMode( value ) {
+	setFixedBaseMode( value: boolean ) {
 
 		this.fixedBaseMode = value;
 		var i = this.numChains, host;
@@ -172,13 +185,13 @@ export class Structure3D {
 
 	}
 
-	getChain( id ) {
+	getChain( id: number ) {
 
 		return this.chains[ id ];
 
 	}
 
-	connectChain( Chain, chainNumber, boneNumber, point, target, meshBone, color ) {
+	connectChain( Chain: Chain3D, chainNumber: number, boneNumber: number, point: string, target: V3, meshBone: any, color: number ) {
 
 		var c = chainNumber;
 		var n = boneNumber;
@@ -224,11 +237,11 @@ export class Structure3D {
 
 	// 3D THREE
 
-	addChainMeshs( chain, id ) {
+	addChainMeshs( chain: Chain3D, id?: number ) {
 
 		this.isWithMesh = true;
 
-		var meshBone = [];
+		var meshBone: any[] = [];
 		var lng = chain.bones.length;
 		for ( var i = 0; i < lng; i ++ ) {
 
@@ -240,14 +253,14 @@ export class Structure3D {
 
 	}
 
-	addBoneMesh( bone, prev, ar, chain ) {
+	addBoneMesh( bone: Bone3D, prev: number, ar: THREE.Mesh[], chain: Chain3D ) {
 
 		var size = bone.length;
 		var color = bone.color;
 		var g = new THREE.CylinderBufferGeometry( 1, 0.5, size, 4 );
-		g.applyMatrix( new THREE.Matrix4().makeRotationX( - Math.PI * 0.5 ) );
-		g.applyMatrix( new THREE.Matrix4().makeTranslation( 0, 0, size * 0.5 ) );
-		var m = new THREE.MeshStandardMaterial( { color: color, wireframe: false, shadowSide: false } );
+		g.applyMatrix4( new THREE.Matrix4().makeRotationX( - Math.PI * 0.5 ) );
+		g.applyMatrix4( new THREE.Matrix4().makeTranslation( 0, 0, size * 0.5 ) );
+		var m = new THREE.MeshStandardMaterial( { color: color, wireframe: false } );
 
 		var m2 = new THREE.MeshBasicMaterial( { wireframe: true } );
 		//var m4 = new THREE.MeshBasicMaterial({ wireframe : true, color:color, transparent:true, opacity:0.3 });
@@ -256,6 +269,7 @@ export class Structure3D {
 		var extraGeo;
 
 		var type = bone.joint.type;
+		let axe;
 		switch ( type ) {
 
 			case J_BALL :
@@ -266,12 +280,12 @@ export class Structure3D {
 				var s = 2;//size/4;
 				var r = 2;//
 				extraGeo = new THREE.CylinderBufferGeometry( 0, r, s, 6, 1, true );
-				extraGeo.applyMatrix( new THREE.Matrix4().makeRotationX( - Math.PI * 0.5 ) );
-				extraGeo.applyMatrix( new THREE.Matrix4().makeTranslation( 0, 0, s * 0.5 ) );
+				extraGeo.applyMatrix4( new THREE.Matrix4().makeRotationX( - Math.PI * 0.5 ) );
+				extraGeo.applyMatrix4( new THREE.Matrix4().makeTranslation( 0, 0, s * 0.5 ) );
 				extraMesh = new THREE.Mesh( extraGeo, m2 );
 				break;
 			case J_GLOBAL :
-				var axe = bone.joint.getHingeRotationAxis();
+				axe = bone.joint.getHingeRotationAxis();
 				//console.log( axe );
 				var a1 = bone.joint.min;
 				var a2 = bone.joint.max;
@@ -280,16 +294,16 @@ export class Structure3D {
 				m2.color.setHex( 0xFFFF00 );
 				extraGeo = new THREE.CircleBufferGeometry( r, 12, a1, - a1 + a2 );
 				//extraGeo.applyMatrix( new THREE.Matrix4().makeRotationX( -Math.PI*0.5 ) );
-				if ( axe.z === 1 ) extraGeo.applyMatrix( new THREE.Matrix4().makeRotationX( - Math.PI * 0.5 ) );
+				if ( axe.z === 1 ) extraGeo.applyMatrix4( new THREE.Matrix4().makeRotationX( - Math.PI * 0.5 ) );
 				if ( axe.y === 1 ) {
 
-					extraGeo.applyMatrix( new THREE.Matrix4().makeRotationY( - Math.PI * 0.5 ) ); extraGeo.applyMatrix( new THREE.Matrix4().makeRotationX( - Math.PI * 0.5 ) );
+					extraGeo.applyMatrix4( new THREE.Matrix4().makeRotationY( - Math.PI * 0.5 ) ); extraGeo.applyMatrix4( new THREE.Matrix4().makeRotationX( - Math.PI * 0.5 ) );
 
 				}
 
 				if ( axe.x === 1 ) {
 
-					extraGeo.applyMatrix( new THREE.Matrix4().makeRotationY( Math.PI * 0.5 ) );
+					extraGeo.applyMatrix4( new THREE.Matrix4().makeRotationY( Math.PI * 0.5 ) );
 
 				}
 
@@ -297,7 +311,7 @@ export class Structure3D {
 				break;
 			case J_LOCAL :
 
-				var axe = bone.joint.getHingeRotationAxis();
+				axe = bone.joint.getHingeRotationAxis();
 
 
 				var r = 2;
@@ -306,18 +320,18 @@ export class Structure3D {
 				//console.log('local', a1, a2)
 				m2.color.setHex( 0x00FFFF );
 				extraGeo = new THREE.CircleBufferGeometry( r, 12, a1, - a1 + a2 );
-				extraGeo.applyMatrix( new THREE.Matrix4().makeRotationX( - Math.PI * 0.5 ) );
+				extraGeo.applyMatrix4( new THREE.Matrix4().makeRotationX( - Math.PI * 0.5 ) );
 
 				if ( axe.z === 1 ) {
 
-					extraGeo.applyMatrix( new THREE.Matrix4().makeRotationY( - Math.PI * 0.5 ) ); extraGeo.applyMatrix( new THREE.Matrix4().makeRotationX( Math.PI * 0.5 ) );
+					extraGeo.applyMatrix4( new THREE.Matrix4().makeRotationY( - Math.PI * 0.5 ) ); extraGeo.applyMatrix4( new THREE.Matrix4().makeRotationX( Math.PI * 0.5 ) );
 
 				}
 
-				if ( axe.x === 1 ) extraGeo.applyMatrix( new THREE.Matrix4().makeRotationZ( - Math.PI * 0.5 ) );
+				if ( axe.x === 1 ) extraGeo.applyMatrix4( new THREE.Matrix4().makeRotationZ( - Math.PI * 0.5 ) );
 				if ( axe.y === 1 ) {
 
-					extraGeo.applyMatrix( new THREE.Matrix4().makeRotationX( Math.PI * 0.5 ) ); extraGeo.applyMatrix( new THREE.Matrix4().makeRotationY( Math.PI * 0.5 ) );
+					extraGeo.applyMatrix4( new THREE.Matrix4().makeRotationX( Math.PI * 0.5 ) ); extraGeo.applyMatrix4( new THREE.Matrix4().makeRotationY( Math.PI * 0.5 ) );
 
 				}
 
@@ -326,11 +340,11 @@ export class Structure3D {
 
 		}
 
-		var axe = new THREE.AxesHelper( 1.5 );
+		let axeThree = new THREE.AxesHelper( 1.5 );
 		//var bw = new THREE.Mesh( g,  m4 );
 
 		var b = new THREE.Mesh( g, m );
-		b.add( axe );
+		b.add( axeThree );
 		//b.add(bw);
 		this.scene.add( b );
 

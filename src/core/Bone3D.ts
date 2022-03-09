@@ -1,13 +1,19 @@
-import { END, START } from '../constants.js';
-import { Joint3D } from './Joint3D.js';
-import { V3 } from '../math/V3.js';
+import { END, START, ConnectionType } from '../constants';
+import { Joint3D } from './Joint3D';
+import { V3 } from '../math/V3';
 
 
 export class Bone3D {
+	static isBone3D = true;
+	joint: Joint3D;
+	start: V3;
+	end: V3;
+	boneConnectionPoint: ConnectionType;
+	length: number;
+	color: number;
+	name: string;
 
-	constructor( startLocation, endLocation, directionUV, length, color ) {
-
-		this.isBone3D = true;
+	constructor( startLocation: V3, endLocation: V3, directionUV?: V3, length?: number, color?: number ) {
 
 		this.joint = new Joint3D();
 		this.start = new V3();
@@ -24,7 +30,7 @@ export class Bone3D {
 	}
 
 
-	init( startLocation, endLocation, directionUV, length ) {
+	init( startLocation: V3, endLocation: V3, directionUV: V3, length: number ) {
 
 		this.setStartLocation( startLocation );
 		if ( endLocation ) {
@@ -51,56 +57,56 @@ export class Bone3D {
 
 	// SET
 
-	setColor( c ) {
+	setColor( c: number ) {
 
 		this.color = c;
 
 	}
 
-	setBoneConnectionPoint( bcp ) {
+	setBoneConnectionPoint( bcp: ConnectionType ) {
 
 		this.boneConnectionPoint = bcp;
 
 	}
 
-	setHingeClockwise( angle ) {
+	setHingeClockwise( angle: number ) {
 
 
 		this.joint.setHingeClockwise( angle );
 
 	}
 
-	setHingeAnticlockwise( angle ) {
+	setHingeAnticlockwise( angle: number ) {
 
 		this.joint.setHingeAnticlockwise( angle );
 
 	}
 
-	setBallJointConstraintDegs( angle ) {
+	setBallJointConstraintDegs( angle: number ) {
 
 		this.joint.setBallJointConstraintDegs( angle );
 
 	}
 
-	setStartLocation( location ) {
+	setStartLocation( location: V3 ) {
 
 		this.start.copy( location );
 
 	}
 
-	setEndLocation( location ) {
+	setEndLocation( location: V3 ) {
 
 		this.end.copy( location );
 
 	}
 
-	setLength( lng ) {
+	setLength( lng: number ) {
 
 		if ( lng > 0 ) this.length = lng;
 
 	}
 
-	setJoint( joint ) {
+	setJoint( joint: Joint3D ) {
 
 		this.joint = joint;
 

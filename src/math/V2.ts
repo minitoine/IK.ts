@@ -1,165 +1,168 @@
-function V2( x, y ) {
+export class V2 {
 
-	this.x = x || 0;
-	this.y = y || 0;
+	static isVector2 = true;
+	x: number;
+	y: number;
 
-}
+	constructor( x?: number, y?: number ) {
 
-Object.assign( V2.prototype, {
+		this.x = x || 0;
+		this.y = y || 0;
 
-	isVector2: true,
+	}
 
-	set: function ( x, y ) {
+
+	set( x: number, y: number ) {
 
 	    this.x = x || 0;
 	    this.y = y || 0;
 	    return this;
 
-	},
+	}
 
-	distanceTo: function ( v ) {
+	distanceTo( v: V2 ) {
 
 		return Math.sqrt( this.distanceToSquared( v ) );
 
-	},
+	}
 
-	distanceToSquared: function ( v ) {
+	distanceToSquared( v: V2 ) {
 
 		var dx = this.x - v.x, dy = this.y - v.y;
 		return dx * dx + dy * dy;
 
-	},
+	}
 
-	multiplyScalar: function ( scalar ) {
+	multiplyScalar( scalar: number ) {
 
 		this.x *= scalar;
 		this.y *= scalar;
 		return this;
 
-	},
+	}
 
-	divideScalar: function ( scalar ) {
+	divideScalar( scalar: number ) {
 
 		return this.multiplyScalar( 1 / scalar );
 
-	},
+	}
 
-	length: function () {
+	length() {
 
 		return Math.sqrt( this.x * this.x + this.y * this.y );
 
-	},
+	}
 
-	normalize: function () {
+	normalize() {
 
 		return this.divideScalar( this.length() || 1 );
 
-	},
+	}
 
-	normalised: function () {
+	normalised() {
 
 	    return new V2( this.x, this.y ).normalize();
 
-	},
+	}
 
-	lengthSq: function () {
+	lengthSq() {
 
 		return this.x * this.x + this.y * this.y;
 
-	},
+	}
 
-	add: function ( v ) {
+	add( v: V2 ) {
 
 		this.x += v.x;
 		this.y += v.y;
 	    return this;
 
-	},
+	}
 
-	plus: function ( v ) {
+	plus( v: V2 ) {
 
 	    return new V2( this.x + v.x, this.y + v.y );
 
-	},
+	}
 
-	min: function ( v ) {
+	min( v: V2 ) {
 
 		this.x -= v.x;
 		this.y -= v.y;
 
 	    return this;
 
-	},
+	}
 
-	minus: function ( v ) {
+	minus( v: V2 ) {
 
 	    return new V2( this.x - v.x, this.y - v.y );
 
-	},
+	}
 
-	divideBy: function ( value ) {
+	divideBy( value: number ) {
 
 	    return new V2( this.x, this.y ).divideScalar( value );
 
-	},
+	}
 
-	dot: function ( a, b ) {
+	dot( a: V2 ) {
 
 		return this.x * a.x + this.y * a.y;
 
-	},
+	}
 
-	negate: function () {
+	negate() {
 
 	    this.x = - this.x;
 	    this.y = - this.y;
 	    return this;
 
-	},
+	}
 
-	negated: function () {
+	negated() {
 
 	    return new V2( - this.x, - this.y );
 
-	},
+	}
 
-	clone: function () {
+	clone() {
 
 	    return new V2( this.x, this.y );
 
-	},
+	}
 
-	copy: function ( v ) {
+	copy( v: V2 ) {
 
 	    this.x = v.x;
 	    this.y = v.y;
 	    return this;
 
-	},
+	}
 
-	cross: function ( v ) {
+	cross( v: V2 ) {
 
 	    return this.x * v.y - this.y * v.x;
 
-	},
+	}
 
-	sign: function ( v ) {
+	sign( v: V2 ) {
 
 		var s = this.cross( v );
 		return s >= 0 ? 1 : - 1;
 
-	},
+	}
 
-	approximatelyEquals: function ( v, t ) {
+	approximatelyEquals( v: V2, t: number ) {
 
 	    if ( t < 0 ) return false;
 	    var xDiff = Math.abs( this.x - v.x );
 	    var yDiff = Math.abs( this.y - v.y );
 	    return ( xDiff < t && yDiff < t );
 
-	},
+	}
 
-	rotate: function ( angle ) {
+	rotate( angle: number ) {
 
 		var cos = Math.cos( angle );
 		var sin = Math.sin( angle );
@@ -169,34 +172,32 @@ Object.assign( V2.prototype, {
 		this.y = y;
 		return this;
 
-	},
+	}
 
-	angleTo: function ( v ) {
+	angleTo( v: V2 ) {
 
 		var a = this.dot( v ) / ( Math.sqrt( this.lengthSq() * v.lengthSq() ) );
 		if ( a <= - 1 ) return Math.PI;
 		if ( a >= 1 ) return 0;
 		return Math.acos( a );
 
-	},
+	}
 
-	getSignedAngle: function ( v ) {
+	getSignedAngle( v: V2 ) {
 
 		var a = this.angleTo( v );
 		var s = this.sign( v );
 		return s === 1 ? a : - a;
 
-	},
+	}
 
-	constrainedUV: function ( baselineUV, min, max ) {
+	constrainedUV( baselineUV: V2, min: number, max: number ) {
 
 		var angle = baselineUV.getSignedAngle( this );
 		if ( angle > max ) this.copy( baselineUV ).rotate( max );
 		if ( angle < min ) this.copy( baselineUV ).rotate( min );
 		return this;
 
-	},
+	}
 
-} );
-
-export { V2 };
+}

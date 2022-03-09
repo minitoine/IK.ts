@@ -2,9 +2,9 @@
  * A list of constants built-in for
  * the Fik engine.
  */
-import { V3 } from './math/V3.js';
-import { V2 } from './math/V2.js';
-import { M3 } from './math/M3.js';
+import { V3 } from './math/V3';
+import { V2 } from './math/V2';
+import { M3 } from './math/M3';
 
 export var REVISION = '1.3.3';
 
@@ -19,6 +19,10 @@ export var TODEG = 180 / Math.PI;
 // chain Basebone Constraint Type
 
 export var NONE = 1; // No constraint
+export enum BaseboneConstraintType {
+    NONE = 1
+}
+
 // 3D
 export var GLOBAL_ROTOR = 2;// World-space rotor constraint
 export var GLOBAL_HINGE = 3;// World-space hinge constraint
@@ -34,9 +38,18 @@ export var LOCAL_ABSOLUTE = 8; // Constrained about a direction with relative to
 export var J_BALL = 10;
 export var J_LOCAL = 11;
 export var J_GLOBAL = 12;
+export enum JointType {
+    J_BALL = 10,
+    J_Local = 11,
+    J_GLOBAL = 12
+};
 
 export var START = 20;
 export var END = 21;
+export enum ConnectionType {
+    START = 20,
+    END = 21
+}
 
 // Define world-space axis
 

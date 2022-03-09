@@ -1,12 +1,19 @@
-import { END, START } from '../constants.js';
-import { Joint2D } from './Joint2D.js';
-import { V2 } from '../math/V2.js';
+import { END, JointType, START } from '../constants';
+import { Joint2D } from './Joint2D';
+import { V2 } from '../math/V2';
 
 export class Bone2D {
+	isBone2D = true;
+	start: V2;
+	end: V2;
+	length: number;
+	joint: Joint2D;
+	globalConstraintUV = new V2( 1, 0 );
+	boneConnectionPoint = END;
+	color?: number;
+	name: string;
 
-	constructor( Start, End, directionUV, length, clockwiseDegs, anticlockwiseDegs, color ) {
-
-		this.isBone2D = true;
+	constructor( Start: V2, End?: V2, directionUV?: V2, length?: number, clockwiseDegs?: number, anticlockwiseDegs?: number, color?: any ) {
 
 		this.start = new V2();
 		this.end = new V2();
@@ -14,8 +21,6 @@ export class Bone2D {
 
 		this.joint = new Joint2D( clockwiseDegs, anticlockwiseDegs );
 
-		this.globalConstraintUV = new V2( 1, 0 );
-		this.boneConnectionPoint = END;
 
 		this.color = color || null;
 		this.name = '';
@@ -54,43 +59,43 @@ export class Bone2D {
 
 	// SET
 
-	setName( name ) {
+	setName( name: string ) {
 
 		this.name = name;
 
 	}
 
-	setColor( c ) {
+	setColor( c: number ) {
 
 		this.color = c;
 
 	}
 
-	setBoneConnectionPoint( bcp ) {
+	setBoneConnectionPoint( bcp: number ) {
 
 		this.boneConnectionPoint = bcp;
 
 	}
 
-	setStartLocation( v ) {
+	setStartLocation( v: V2 ) {
 
 		this.start.copy( v );
 
 	}
 
-	setEndLocation( v ) {
+	setEndLocation( v: V2 ) {
 
 		this.end.copy( v );
 
 	}
 
-	setLength( length ) {
+	setLength( length: number ) {
 
 		if ( length > 0 ) this.length = length;
 
 	}
 
-	setGlobalConstraintUV( v ) {
+	setGlobalConstraintUV( v: V2 ) {
 
 		this.globalConstraintUV = v;
 
@@ -98,25 +103,25 @@ export class Bone2D {
 
 	// SET JOINT
 
-	setJoint( joint ) {
+	setJoint( joint: Joint2D ) {
 
 		this.joint = joint;
 
 	}
 
-	setClockwiseConstraintDegs( angleDegs ) {
+	setClockwiseConstraintDegs( angleDegs: number ) {
 
 		this.joint.setClockwiseConstraintDegs( angleDegs );
 
 	}
 
-	setAnticlockwiseConstraintDegs( angleDegs ) {
+	setAnticlockwiseConstraintDegs( angleDegs: number ) {
 
 		this.joint.setAnticlockwiseConstraintDegs( angleDegs );
 
 	}
 
-	setJointConstraintCoordinateSystem( coordSystem ) {
+	setJointConstraintCoordinateSystem( coordSystem: JointType ) {
 
 		this.joint.setConstraintCoordinateSystem( coordSystem );
 

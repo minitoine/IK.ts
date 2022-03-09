@@ -1,13 +1,22 @@
-import { UP, NONE, GLOBAL_ABSOLUTE, LOCAL_RELATIVE, LOCAL_ABSOLUTE, END, START } from '../constants.js';
-import { _Math } from '../math/Math.js';
-import { V2 } from '../math/V2.js';
-import { Tools } from './Tools.js';
+import { UP, NONE, GLOBAL_ABSOLUTE, LOCAL_RELATIVE, LOCAL_ABSOLUTE, END, START } from '../constants';
+import { _Math } from '../math/Math';
+import { V2 } from '../math/V2';
+import { Chain2D } from './Chain2D';
+import { Tools } from './Tools';
+import * as THREE from 'three';
+import { Bone2D } from './Bone2D';
 
 export class Structure2D {
+	static isStructure2D = true;
+	fixedBaseMode: boolean;
+	chains: Chain2D[];
+	meshChains: any[];
+	targets: any[];
+	numChains: number;
+	scene: any;
+	isWithMesh: boolean;
 
-	constructor( scene ) {
-
-		this.isStructure2D = true;
+	constructor( scene: any ) {
 
 		this.fixedBaseMode = true;
 
@@ -47,7 +56,7 @@ export class Structure2D {
 			if ( hostChainNumber !== - 1 && constraintType !== GLOBAL_ABSOLUTE ) {
 
 				// Get the bone which this chain is connected to in the 'host' chain
-				var hostBone = this.chains[ hostChainNumber ].bones[ chain.getConnectedBoneNumber() ];
+				var hostBone: any = this.chains[ hostChainNumber ].bones[ chain.getConnectedBoneNumber() ];
 
 				chain.setBaseLocation( chain.getBoneConnectionPoint() === START ? hostBone.start : hostBone.end );
 
@@ -108,7 +117,7 @@ export class Structure2D {
 
 	}
 
-	setFixedBaseMode( value ) {
+	setFixedBaseMode( value: boolean ) {
 
 		// Update our flag and set the fixed base mode on the first (i.e. 0th) chain in this structure.
 		this.fixedBaseMode = value;
@@ -142,7 +151,7 @@ export class Structure2D {
 
 	}
 
-	add( chain, target, meshBone ) {
+	add( chain: Chain2D, target: V2, meshBone: any ) {
 
 		this.chains.push( chain );
 		this.numChains ++;
@@ -156,7 +165,7 @@ export class Structure2D {
 
 	}
 
-	remove( id ) {
+	remove( id: number ) {
 
 		this.chains[ id ].clear();
 		this.chains.splice( id, 1 );
@@ -178,13 +187,13 @@ export class Structure2D {
 
 	}
 
-	getChain( id ) {
+	getChain( id: number ) {
 
 		return this.chains[ id ];
 
 	}
 
-	connectChain( Chain, chainNumber, boneNumber, point, target, meshBone, color ) {
+	connectChain( Chain: Chain2D, chainNumber: number, boneNumber: number, point: string, target: V2, meshBone: any, color: number ) {
 
 		var c = chainNumber;
 		var n = boneNumber;
@@ -240,7 +249,7 @@ export class Structure2D {
 
 	// 3D THREE
 
-	addChainMeshs( chain, id ) {
+	addChainMeshs( chain: Chain2D, id?: number ) {
 
 		this.isWithMesh = true;
 
@@ -257,17 +266,17 @@ export class Structure2D {
 
 	}
 
-	addBoneMesh( bone ) {
+	addBoneMesh( bone: Bone2D ) {
 
 		var size = bone.length;
 		var color = bone.color;
 		//console.log(bone.color)
 		var g = new THREE.CylinderBufferGeometry( 1, 0.5, size, 4 );
 		//g.applyMatrix( new THREE.Matrix4().makeTranslation( 0, size*0.5, 0 ) );
-		g.applyMatrix( new THREE.Matrix4().makeRotationX( - _Math.pi90 ) );
-		g.applyMatrix( new THREE.Matrix4().makeTranslation( 0, 0, size * 0.5 ) );
+		g.applyMatrix4( new THREE.Matrix4().makeRotationX( - _Math.pi90 ) );
+		g.applyMatrix4( new THREE.Matrix4().makeTranslation( 0, 0, size * 0.5 ) );
 		//var m = new THREE.MeshStandardMaterial({ color:color });
-		var m = new THREE.MeshStandardMaterial( { color: color, wireframe: false, shadowSide: false } );
+		var m = new THREE.MeshStandardMaterial( { color: color, wireframe: false } );
 		//m.color.setHex( color );
 
 		var m2 = new THREE.MeshBasicMaterial( { wireframe: true } );

@@ -1,6 +1,6 @@
 var Tools = {
 
-	error: function ( str ) {
+	error: function ( str: string ) {
 
 		console.error( str );
 

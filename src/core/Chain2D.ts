@@ -1,15 +1,36 @@
-import { NONE, GLOBAL_ABSOLUTE, LOCAL_RELATIVE, LOCAL_ABSOLUTE, END, START, J_LOCAL, J_GLOBAL, MAX_VALUE } from '../constants.js';
-import { _Math } from '../math/Math.js';
-import { V2 } from '../math/V2.js';
-import { Bone2D } from './Bone2D.js';
-import { Tools } from './Tools.js';
+import { NONE, GLOBAL_ABSOLUTE, LOCAL_RELATIVE, LOCAL_ABSOLUTE, END, START, J_LOCAL, J_GLOBAL, MAX_VALUE, BaseboneConstraintType, ConnectionType } from '../constants';
+import { _Math } from '../math/Math';
+import { V2 } from '../math/V2';
+import { Bone2D } from './Bone2D';
+import { Tools } from './Tools';
 
 export class Chain2D {
+	static isChain2D = true;
+	tmpTarget: V2;
+	bones: Bone2D[];
+	name: string;
+	solveDistanceThreshold: number;
+	minIterationChange: number;
+	maxIteration: number;
+	precision: number;
+	chainLength: number;
+	numBones: number;
+	baseLocation: V2;
+	fixedBaseMode: boolean;
+	baseboneConstraintType: BaseboneConstraintType;
+	baseboneConstraintUV: V2;
+	baseboneRelativeConstraintUV: V2;
+	lastTargetLocation: V2;
+	lastBaseLocation: V2;
+	boneConnectionPoint: ConnectionType;
+	currentSolveDistance: number;
+	connectedChainNumber: number;
+	connectedBoneNumber: number;
+	color: number;
+	embeddedTarget: V2;
+	useEmbeddedTarget: boolean;
 
-	constuctor( color ) {
-
-		this.isChain2D = true;
-
+	constuctor( color: number ) {
 		this.tmpTarget = new V2();
 
 		this.bones = [];
@@ -103,7 +124,7 @@ export class Chain2D {
 
 	}
 
-	addBone( bone ) {
+	addBone( bone: Bone2D ) {
 
 		if ( bone.color === null ) bone.setColor( this.color );
 
@@ -130,7 +151,7 @@ export class Chain2D {
 
 	}
 
-	removeBone( id ) {
+	removeBone( id: number ) {
 
 		if ( id < this.numBones ) {
 
@@ -143,7 +164,7 @@ export class Chain2D {
 
 	}
 
-	addConsecutiveBone( directionUV, length, clockwiseDegs, anticlockwiseDegs, color ) {
+	addConsecutiveBone( directionUV: V2 | Bone2D, length: number, clockwiseDegs: number, anticlockwiseDegs: number, color?: number ) {
 
 		if ( this.numBones === 0 ) {
 
@@ -151,7 +172,7 @@ export class Chain2D {
 
 		}
 
-		if ( directionUV.isBone2D ) { // first argument is bone
+		if ( directionUV instanceof Bone2D ) { // first argument is bone
 
 			var bone = directionUV;
 
@@ -171,7 +192,7 @@ export class Chain2D {
 			// Add a bone to the end of this IK chain
 			this.addBone( bone );
 
-		} else if ( directionUV.isVector2 ) {
+		} else if ( directionUV instanceof V2 ) {
 
 			color = color || this.color;
 
@@ -265,7 +286,7 @@ export class Chain2D {
 	//      SET
 	// -------------------------------
 
-	setColor( color ) {
+	setColor( color: number ) {
 
 		this.color = color;
 		var i = this.numBones;
@@ -273,50 +294,50 @@ export class Chain2D {
 
 	}
 
-	setBaseboneRelativeConstraintUV( constraintUV ) {
+	setBaseboneRelativeConstraintUV( constraintUV: V2 ) {
 
 		this.baseboneRelativeConstraintUV = constraintUV;
 
 	}
 
-	setConnectedBoneNumber( boneNumber ) {
+	setConnectedBoneNumber( boneNumber: number ) {
 
 		this.connectedBoneNumber = boneNumber;
 
 	}
 
-	setConnectedChainNumber( chainNumber ) {
+	setConnectedChainNumber( chainNumber: number ) {
 
 		this.connectedChainNumber = chainNumber;
 
 	}
 
-	setBoneConnectionPoint( point ) {
+	setBoneConnectionPoint( point: ConnectionType ) {
 
 		this.boneConnectionPoint = point;
 
 	}
 
-	setBaseboneConstraintUV( constraintUV ) {
+	setBaseboneConstraintUV( constraintUV: V2 ) {
 
 		_Math.validateDirectionUV( constraintUV );
 		this.baseboneConstraintUV.copy( constraintUV.normalised() );
 
 	}
 
-	setBaseLocation( baseLocation ) {
+	setBaseLocation( baseLocation: V2 ) {
 
 		this.baseLocation.copy( baseLocation );
 
 	}
 
-	setBaseboneConstraintType( value ) {
+	setBaseboneConstraintType( value: BaseboneConstraintType ) {
 
 		this.baseboneConstraintType = value;
 
 	}
 
-	setFixedBaseMode( value ) {
+	setFixedBaseMode( value: boolean ) {
 
 		// Enforce that a chain connected to another chain stays in fixed base mode (i.e. it moves with the chain it's connected to instead of independently)
 		if ( ! value && this.connectedChainNumber !== - 1 ) return;
@@ -326,21 +347,21 @@ export class Chain2D {
 
 	}
 
-	setMaxIterationAttempts( maxIteration ) {
+	setMaxIterationAttempts( maxIteration: number ) {
 
 		if ( maxIteration < 1 ) return;
 		this.maxIteration = maxIteration;
 
 	}
 
-	setMinIterationChange( minIterationChange ) {
+	setMinIterationChange( minIterationChange: number ) {
 
 		if ( minIterationChange < 0 ) return;
 		this.minIterationChange = minIterationChange;
 
 	}
 
-	setSolveDistanceThreshold( solveDistance ) {
+	setSolveDistanceThreshold( solveDistance: number ) {
 
 		if ( solveDistance < 0 ) return;
 		this.solveDistanceThreshold = solveDistance;
@@ -375,7 +396,7 @@ export class Chain2D {
 	// - A solution incrementally improves on the previous solution by less than the minIterationChange, or
 	// - The number of attempts to solve the IK chain exceeds the maxIteration.
 
-	solveForTarget( t ) {
+	solveForTarget( t: V2 ) {
 
 		this.tmpTarget.set( t.x, t.y );
 		var p = this.precision;
@@ -405,7 +426,7 @@ export class Chain2D {
 
 		// Not the same target? Then we must solve the chain for the new target.
 		// We'll start by creating a list of bones to store our best solution
-		var bestSolution = [];
+		var bestSolution: any[] = [];
 
 		// We'll keep track of our best solve distance, starting it at a huge value which will be beaten on first attempt
 		var bestSolveDistance = MAX_VALUE;
@@ -477,7 +498,7 @@ export class Chain2D {
 	// Solve the IK chain for the given target using the FABRIK algorithm.
 	// retun the best solve distance found between the end-effector of this chain and the provided target.
 
-	solveIK( target ) {
+	solveIK( target: V2 ) {
 
 		if ( this.numBones === 0 ) return;
 

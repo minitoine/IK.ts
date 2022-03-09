@@ -1,8 +1,12 @@
-import { J_LOCAL, J_GLOBAL, PI, TORAD } from '../constants.js';
+import { J_BALL, J_LOCAL, J_GLOBAL, PI, TORAD, JointType } from '../constants';
 
 export class Joint2D {
+	isJoint2D: boolean;
+	coordinateSystem: JointType;
+	min: number;
+	max: number;
 
-	constructor( clockwise, antiClockwise, coordSystem ) {
+	constructor( clockwise?: number, antiClockwise?: number, coordSystem?: JointType) {
 
 		this.isJoint2D = true;
 
@@ -27,7 +31,7 @@ export class Joint2D {
 
 	}
 
-	validateAngle( a ) {
+	validateAngle( a: number ) {
 
 		a = a < 0 ? 0 : a;
 		a = a > 180 ? 180 : a;
@@ -37,7 +41,7 @@ export class Joint2D {
 
 	// SET
 
-	set( joint ) {
+	set( joint: Joint2D ) {
 
 		this.max = joint.max;
 		this.min = joint.min;
@@ -45,7 +49,7 @@ export class Joint2D {
 
 	}
 
-	setClockwiseConstraintDegs( angle ) {
+	setClockwiseConstraintDegs( angle: number ) {
 
 		// 0 to -180 degrees represents clockwise rotation
 		if ( angle < 0 ) angle *= - 1;
@@ -53,14 +57,14 @@ export class Joint2D {
 
 	}
 
-	setAnticlockwiseConstraintDegs( angle ) {
+	setAnticlockwiseConstraintDegs( angle: number ) {
 
 		// 0 to 180 degrees represents anti-clockwise rotation
 		this.max = this.validateAngle( angle ) * TORAD;
 
 	}
 
-	setConstraintCoordinateSystem( coordSystem ) {
+	setConstraintCoordinateSystem( coordSystem: JointType ) {
 
 		this.coordinateSystem = coordSystem;
 

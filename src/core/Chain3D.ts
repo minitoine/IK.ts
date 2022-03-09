@@ -1,15 +1,40 @@
-import { NONE, GLOBAL_ROTOR, GLOBAL_HINGE, LOCAL_ROTOR, LOCAL_HINGE, J_BALL, J_GLOBAL, J_LOCAL, END, START, MAX_VALUE, PRECISION, PRECISION_DEG } from '../constants.js';
-import { _Math } from '../math/Math.js';
-import { V3 } from '../math/V3.js';
-import { M3 } from '../math/M3.js';
-import { Bone3D } from './Bone3D.js';
-import { Tools } from './Tools.js';
+import { NONE, GLOBAL_ROTOR, GLOBAL_HINGE, LOCAL_ROTOR, LOCAL_HINGE, J_BALL, J_GLOBAL, J_LOCAL, END, START, MAX_VALUE, PRECISION, PRECISION_DEG, BaseboneConstraintType, ConnectionType, JointType } from '../constants';
+import { _Math } from '../math/Math';
+import { V3 } from '../math/V3';
+import { M3 } from '../math/M3';
+import { Bone3D } from './Bone3D';
+import { Tools } from './Tools';
 
 export class Chain3D {
+	static isChain3D = true;
+	tmpTarget: V3;
+	tmpMtx: M3;
+	bones: Bone3D[];
+	name: string;
+	color: number;
+	solveDistanceThreshold: number;
+	minIterationChange: number;
+	maxIteration: number;
+	precision: number;
+	chainLength: number;
+	numBones: number;
+	baseLocation: V3;
+	fixedBaseMode: boolean;
+	baseboneConstraintType: BaseboneConstraintType;
+	baseboneConstraintUV: V3;
+	baseboneRelativeConstraintUV: V3;
+	baseboneRelativeReferenceConstraintUV: V3;
+	lastTargetLocation: V3;
+	lastBaseLocation: V3;
+	currentSolveDistance: number;
+	connectedChainNumber: number;
+	connectedBoneNumber: number;
+	boneConnectionPoint: ConnectionType;
+	isFullForward: boolean;
+	embeddedTarget: V3;
+	useEmbeddedTarget: boolean;
 
-	constructor( color ) {
-
-		this.isChain3D = true;
+	constructor( color?: number ) {
 
 		this.tmpTarget = new V3();
 		this.tmpMtx = new M3();
@@ -104,7 +129,7 @@ export class Chain3D {
 
 	}
 
-	addBone( bone ) {
+	addBone( bone: Bone3D ) {
 
 		bone.setColor( this.color );
 
@@ -129,7 +154,7 @@ export class Chain3D {
 
 	}
 
-	removeBone( id ) {
+	removeBone( id: number ) {
 
 		if ( id < this.numBones ) {
 
@@ -142,7 +167,7 @@ export class Chain3D {
 
 	}
 
-	addConsecutiveBone( directionUV, length ) {
+	addConsecutiveBone( directionUV: V3, length: number ) {
 
 		if ( this.numBones > 0 ) {
 
@@ -155,13 +180,13 @@ export class Chain3D {
 
 	}
 
-	addConsecutiveFreelyRotatingHingedBone( directionUV, length, type, hingeRotationAxis ) {
+	addConsecutiveFreelyRotatingHingedBone( directionUV: V3, length: number, type: string, hingeRotationAxis: V3 ) {
 
 		this.addConsecutiveHingedBone( directionUV, length, type, hingeRotationAxis, 180, 180, _Math.genPerpendicularVectorQuick( hingeRotationAxis ) );
 
 	}
 
-	addConsecutiveHingedBone( DirectionUV, length, type, HingeRotationAxis, clockwiseDegs, anticlockwiseDegs, hingeReferenceAxis ) {
+	addConsecutiveHingedBone( DirectionUV: V3, length: number, type: string, HingeRotationAxis: V3, clockwiseDegs: number, anticlockwiseDegs: number, hingeReferenceAxis: V3 ) {
 
 		// Cannot add a consectuive bone of any kind if the there is no basebone
 		if ( this.numBones === 0 ) return;
@@ -183,7 +208,7 @@ export class Chain3D {
 
 	}
 
-	addConsecutiveRotorConstrainedBone( boneDirectionUV, length, constraintAngleDegs ) {
+	addConsecutiveRotorConstrainedBone( boneDirectionUV: V3, length: number, constraintAngleDegs: number ) {
 
 		if ( this.numBones === 0 ) return;
 
@@ -268,25 +293,25 @@ export class Chain3D {
 	//      SET
 	// -------------------------------
 
-	setConnectedBoneNumber( boneNumber ) {
+	setConnectedBoneNumber( boneNumber: number ) {
 
 		this.connectedBoneNumber = boneNumber;
 
 	}
 
-	setConnectedChainNumber( chainNumber ) {
+	setConnectedChainNumber( chainNumber: number ) {
 
 		this.connectedChainNumber = chainNumber;
 
 	}
 
-	setBoneConnectionPoint( point ) {
+	setBoneConnectionPoint( point: ConnectionType ) {
 
 		this.boneConnectionPoint = point;
 
 	}
 
-	setColor( c ) {
+	setColor( c: number ) {
 
 		this.color = c;
 		var i = this.numBones;
@@ -294,25 +319,25 @@ export class Chain3D {
 
 	}
 
-	setBaseboneRelativeConstraintUV( uv ) {
+	setBaseboneRelativeConstraintUV( uv: V3 ) {
 
 		this.baseboneRelativeConstraintUV = uv.normalised();
 
 	}
 
-	setBaseboneRelativeReferenceConstraintUV( uv ) {
+	setBaseboneRelativeReferenceConstraintUV( uv: V3 ) {
 
 		this.baseboneRelativeReferenceConstraintUV = uv.normalised();
 
 	}
 
-	setBaseboneConstraintUV( uv ) {
+	setBaseboneConstraintUV( uv: V3 ) {
 
 		this.baseboneConstraintUV = uv.normalised();
 
 	}
 
-	setRotorBaseboneConstraint( type, constraintAxis, angleDegs ) {
+	setRotorBaseboneConstraint( type: string, constraintAxis: V3, angleDegs: number ) {
 
 		// Sanity checking
 		if ( this.numBones === 0 ) {
@@ -336,7 +361,7 @@ export class Chain3D {
 
 	}
 
-	setHingeBaseboneConstraint( type, hingeRotationAxis, cwDegs, acwDegs, hingeReferenceAxis ) {
+	setHingeBaseboneConstraint( type: string, hingeRotationAxis: V3, cwDegs: number, acwDegs: number, hingeReferenceAxis: V3 ) {
 
 		// Sanity checking
 		if ( this.numBones === 0 ) {
@@ -372,37 +397,37 @@ export class Chain3D {
 
 	}
 
-	setFreelyRotatingGlobalHingedBasebone( hingeRotationAxis ) {
+	setFreelyRotatingGlobalHingedBasebone( hingeRotationAxis: V3 ) {
 
 		this.setHingeBaseboneConstraint( 'global', hingeRotationAxis, 180, 180, _Math.genPerpendicularVectorQuick( hingeRotationAxis ) );
 
 	}
 
-	setGlobalHingedBasebone( hingeRotationAxis, cwDegs, acwDegs, hingeReferenceAxis ) {
+	setGlobalHingedBasebone( hingeRotationAxis: V3, cwDegs: number, acwDegs: number, hingeReferenceAxis: V3 ) {
 
 		this.setHingeBaseboneConstraint( 'global', hingeRotationAxis, cwDegs, acwDegs, hingeReferenceAxis );
 
 	}
 
-	setFreelyRotatingLocalHingedBasebone( hingeRotationAxis ) {
+	setFreelyRotatingLocalHingedBasebone( hingeRotationAxis: V3 ) {
 
 		this.setHingeBaseboneConstraint( 'local', hingeRotationAxis, 180, 180, _Math.genPerpendicularVectorQuick( hingeRotationAxis ) );
 
 	}
 
-	setLocalHingedBasebone( hingeRotationAxis, cwDegs, acwDegs, hingeReferenceAxis ) {
+	setLocalHingedBasebone( hingeRotationAxis: V3, cwDegs: number, acwDegs: number, hingeReferenceAxis: V3 ) {
 
 		this.setHingeBaseboneConstraint( 'local', hingeRotationAxis, cwDegs, acwDegs, hingeReferenceAxis );
 
 	}
 
-	setBaseLocation( baseLocation ) {
+	setBaseLocation( baseLocation: V3 ) {
 
 		this.baseLocation.copy( baseLocation );
 
 	}
 
-	setFixedBaseMode( value ) {
+	setFixedBaseMode( value: boolean ) {
 
 		// Enforce that a chain connected to another chain stays in fixed base mode (i.e. it moves with the chain it's connected to instead of independently)
 		if ( ! value && this.connectedChainNumber !== - 1 ) return;
@@ -412,21 +437,21 @@ export class Chain3D {
 
 	}
 
-	setMaxIterationAttempts( maxIterations ) {
+	setMaxIterationAttempts( maxIterations: number ) {
 
 		if ( maxIterations < 1 ) return;
 		this.maxIteration = maxIterations;
 
 	}
 
-	setMinIterationChange( minIterationChange ) {
+	setMinIterationChange( minIterationChange: number ) {
 
 		if ( minIterationChange < 0 ) return;
 		this.minIterationChange = minIterationChange;
 
 	}
 
-	setSolveDistanceThreshold( solveDistance ) {
+	setSolveDistanceThreshold( solveDistance: number ) {
 
 		if ( solveDistance < 0 ) return;
 		this.solveDistanceThreshold = solveDistance;
@@ -461,7 +486,7 @@ export class Chain3D {
 	// - A solution incrementally improves on the previous solution by less than the minIterationChange, or
 	// - The number of attempts to solve the IK chain exceeds the maxIteration.
 
-	solveForTarget( t ) {
+	solveForTarget( t: V3 ) {
 
 		this.tmpTarget.set( t.x, t.y, t.z );
 		var p = this.precision;
@@ -497,7 +522,7 @@ export class Chain3D {
 
 		// Not the same target? Then we must solve the chain for the new target.
 		// We'll start by creating a list of bones to store our best solution
-		var bestSolution = [];
+		var bestSolution: any[] = [];
 
 		// We'll keep track of our best solve distance, starting it at a huge value which will be beaten on first attempt
 		var bestSolveDistance = MAX_VALUE;
@@ -567,7 +592,7 @@ export class Chain3D {
 	// Solve the IK chain for the given target using the FABRIK algorithm.
 	// retun the best solve distance found between the end-effector of this chain and the provided target.
 
-	solveIK( target ) {
+	solveIK( target: V3 ) {
 
 		if ( this.numBones === 0 ) return;
 
