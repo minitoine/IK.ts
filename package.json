@@ -1,6 +1,6 @@
 {
   "name": "ik.ts",
-  "version": "1.3.3",
+  "version": "1.3.4",
   "description": "TypeScript Inverse Kinematics Library",
   "main": "build/ik.js",
   "repository": "goldst/IK.ts",
