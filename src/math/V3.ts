@@ -263,7 +263,7 @@ export class V3 {
 
         const v1 = new V3();
 
-        return function projectOnPlane( planeNormal: V3 ) {
+        return ( planeNormal: V3 ) => {
 
             v1.copy( this ).projectOnVector( planeNormal.normalised() );
 

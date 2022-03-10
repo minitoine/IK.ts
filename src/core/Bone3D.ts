@@ -13,7 +13,7 @@ export class Bone3D {
     color: number;
     name: string;
 
-    constructor( startLocation: V3, endLocation: V3, directionUV?: V3, length?: number, color?: number ) {
+    constructor( startLocation: V3, endLocation?: V3, directionUV?: V3, length?: number, color?: number ) {
 
         this.joint = new Joint3D();
         this.start = new V3();
@@ -30,7 +30,7 @@ export class Bone3D {
     }
 
 
-    init( startLocation: V3, endLocation: V3, directionUV: V3, length: number ) {
+    init( startLocation: V3, endLocation?: V3, directionUV?: V3, length?: number ) {
 
         this.setStartLocation( startLocation );
         if ( endLocation ) {
@@ -38,7 +38,7 @@ export class Bone3D {
             this.setEndLocation( endLocation );
             this.length = this.getLength();
 
-        } else {
+        } else if(length && directionUV) {
 
             this.setLength( length );
             this.setEndLocation( this.start.plus( directionUV.normalised().multiplyScalar( length ) ) );

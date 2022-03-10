@@ -30,7 +30,7 @@ export class Chain2D {
     embeddedTarget: V2;
     useEmbeddedTarget: boolean;
 
-    constuctor( color: number ) {
+    constructor( color?: number ) {
         this.tmpTarget = new V2();
 
         this.bones = [];
@@ -206,7 +206,7 @@ export class Chain2D {
             const prevBoneEnd = this.bones[ this.numBones - 1 ].end;
 
             // Add a bone to the end of this IK chain
-            this.addBone( new Bone2D( prevBoneEnd, null, directionUV.normalised(), length, clockwiseDegs, anticlockwiseDegs, color ) );
+            this.addBone( new Bone2D( prevBoneEnd, undefined, directionUV.normalised(), length, clockwiseDegs, anticlockwiseDegs, color ) );
 
 
         }
@@ -294,9 +294,9 @@ export class Chain2D {
 
     }
 
-    setBaseboneRelativeConstraintUV( constraintUV: V2 ) {
+    setBaseboneRelativeConstraintUV( constraintUV?: V2 ) {
 
-        this.baseboneRelativeConstraintUV = constraintUV;
+        if(constraintUV) this.baseboneRelativeConstraintUV = constraintUV;
 
     }
 
@@ -445,7 +445,7 @@ export class Chain2D {
             // Did we solve it for distance? If so, update our best distance and best solution, and also
             // update our last pass solve distance. Note: We will ALWAYS beat our last solve distance on the first run
 
-            if ( solveDistance < bestSolveDistance ) {
+            if ( solveDistance !== undefined && solveDistance < bestSolveDistance ) {
 
                 bestSolveDistance = solveDistance;
                 bestSolution = this.cloneBones();
@@ -457,7 +457,7 @@ export class Chain2D {
 
                 // Did not solve to our satisfaction? Okay...
                 // Did we grind to a halt? If so break out of loop to set the best distance and solution that we have
-                if ( Math.abs( solveDistance - lastPassSolveDistance ) < this.minIterationChange ) break;
+                if ( solveDistance === undefined || Math.abs( solveDistance - lastPassSolveDistance ) < this.minIterationChange ) break;
 
             }
 
@@ -477,7 +477,7 @@ export class Chain2D {
 
             // Did we make things worse? Then we keep our starting distance and solution!
             this.currentSolveDistance = startingDistance;
-            this.bones = startingSolution;
+            this.bones = startingSolution || this.bones;
 
         }
 

@@ -84,7 +84,7 @@ export class Structure3D {
                     // We'll then get the basebone constraint UV and multiply it by the rotation matrix of the connected bone
                     // to make the basebone constraint UV relative to the direction of bone it's connected to.
                     //var relativeBaseboneConstraintUV = connectionBoneMatrix.times( c.getBaseboneConstraintUV() ).normalize();
-                    relativeBaseboneConstraintUV = chain.getBaseboneConstraintUV().clone().applyM3( this.tmpMtx );
+                    relativeBaseboneConstraintUV = chain.getBaseboneConstraintUV()?.clone().applyM3( this.tmpMtx );
 
                     // Update our basebone relative constraint UV property
                     chain.setBaseboneRelativeConstraintUV( relativeBaseboneConstraintUV );

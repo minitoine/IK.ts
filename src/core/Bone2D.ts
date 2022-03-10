@@ -22,7 +22,7 @@ export class Bone2D {
         this.joint = new Joint2D( clockwiseDegs, anticlockwiseDegs );
 
 
-        this.color = color || null;
+        this.color = color;
         this.name = '';
 
         // init

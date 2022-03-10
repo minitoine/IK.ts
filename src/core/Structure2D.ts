@@ -80,7 +80,7 @@ export class Structure2D {
                     const angle = UP.getSignedAngle( hostBoneUV );
 
                     // ...then apply that same rotation to this chain's basebone constraint UV to get the relative constraint UV...
-                    const relativeConstraintUV = chain.getBaseboneConstraintUV().clone().rotate( angle );
+                    const relativeConstraintUV = chain.getBaseboneConstraintUV()?.clone().rotate( angle );
 
                     // ...which we then update.
                     chain.setBaseboneRelativeConstraintUV( relativeConstraintUV );

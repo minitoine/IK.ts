@@ -14,7 +14,7 @@ export class HISolver {
     startBones?: THREE.Object3D;
     endBones?: THREE.Object3D;
     scene: THREE.Scene;
-    target: V3;
+    target?: V3;
     goal: null;
     swivelAngle: number;
     iteration: number;
@@ -23,18 +23,18 @@ export class HISolver {
     bones: THREE.Object3D[];
     numBones: number;
     rotation: number[];
-    fakeBone: Bone2D;
-    angles: number[][];
+    fakeBone?: Bone2D;
+    angles?: number[][];
 
     
     constructor( o: { scene: THREE.Scene, start: THREE.Object3D, end: THREE.Object3D, angles: number[][] } ) {
             
-        this.startBones = null;
-        this.endBones = null;
+        this.startBones = undefined;
+        this.endBones = undefined;
 
         this.scene = o.scene;
 
-        this.target = null;
+        this.target = undefined;
         this.goal = null;
         this.swivelAngle = 0;
 
@@ -123,7 +123,11 @@ export class HISolver {
 
                 //console.log( uv, lng, this.angles[i-1][0], this.angles[i-1][1])
 
-                if ( i === 1 ) chain.addBone( new Bone2D( new V2( 0, 0 ), null, uv, lng, this.angles[ i - 1 ][ 0 ], this.angles[ i - 1 ][ 1 ] ) );
+                if(!this.angles) {
+                    continue;
+                }
+
+                if ( i === 1 ) chain.addBone( new Bone2D( new V2( 0, 0 ), undefined, uv, lng, this.angles[ i - 1 ][ 0 ], this.angles[ i - 1 ][ 1 ] ) );
                 //else chain.addConsecutiveBone( uv, lng );//, this.angles[i-1][0], this.angles[i-1][1] );
                 else chain.addConsecutiveBone( uv, lng, this.angles[ i - 1 ][ 0 ], this.angles[ i - 1 ][ 1 ] );
 
@@ -154,7 +158,7 @@ export class HISolver {
 
         let a;
 
-        for ( let i = 0; i < n; i ++ ) {
+        if(this.fakeBone) for ( let i = 0; i < n; i ++ ) {
 
             a = i === 0 ? _Math.findAngle( this.fakeBone, bones2d[ i ] ) : _Math.findAngle( bones2d[ i - 1 ], bones2d[ i ] );
             this.rotation[ i ] = a * _Math.toDeg;

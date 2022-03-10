@@ -6,7 +6,7 @@ export class Joint2D {
     min: number;
     max: number;
 
-    constructor( clockwise?: number, antiClockwise?: number, coordSystem?: JointType) {
+    constructor( clockwise = 0, antiClockwise?: number, coordSystem?: JointType) {
 
         this.isJoint2D = true;
 

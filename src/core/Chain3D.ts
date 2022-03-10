@@ -319,9 +319,9 @@ export class Chain3D {
 
     }
 
-    setBaseboneRelativeConstraintUV( uv: V3 ) {
+    setBaseboneRelativeConstraintUV( uv?: V3 ) {
 
-        this.baseboneRelativeConstraintUV = uv.normalised();
+        if(uv) this.baseboneRelativeConstraintUV = uv.normalised();
 
     }
 
@@ -540,7 +540,7 @@ export class Chain3D {
 
             // Did we solve it for distance? If so, update our best distance and best solution, and also
             // update our last pass solve distance. Note: We will ALWAYS beat our last solve distance on the first run.
-            if ( solveDistance < bestSolveDistance ) {
+            if ( solveDistance !== undefined && solveDistance < bestSolveDistance ) {
 
                 bestSolveDistance = solveDistance;
                 bestSolution = this.cloneBones();
@@ -551,7 +551,7 @@ export class Chain3D {
             } else { // Did not solve to our satisfaction? Okay...
 
                 // Did we grind to a halt? If so break out of loop to set the best distance and solution that we have
-                if ( Math.abs( solveDistance - lastPassSolveDistance ) < this.minIterationChange ) break;
+                if ( solveDistance === undefined || Math.abs( solveDistance - lastPassSolveDistance ) < this.minIterationChange ) break;
 
             }
 
@@ -571,7 +571,7 @@ export class Chain3D {
 
             // Did we make things worse? Then we keep our starting distance and solution!
             this.currentSolveDistance = startingDistance;
-            this.bones = startingSolution;
+            this.bones = startingSolution || this.bones;
 
         }
 

@@ -7,31 +7,24 @@ import { V3 } from '../math/V3';
 
 
 export class IKSolver {
-    startBones: Bone3D;
-    endBones: Bone3D;
-    target: V3;
-    goal: null;
+    startBones?: Bone3D;
+    endBones?: Bone3D;
+    target?: V3;
+    goal?: null;
     swivelAngle: number;
     iteration: number;
     thresholds: { position: number, rotation: number };
-    solver: Structure3D;
-    chain: Chain3D;
+    solver?: Structure3D;
+    chain?: Chain3D;
 
     constructor() {
 
-        this.startBones = null;
-        this.endBones = null;
-
-        this.target = null;
         this.goal = null;
         this.swivelAngle = 0;
 
         this.iteration = 40;
 
         this.thresholds = { position: 0.1, rotation: 0.1 };
-
-        this.solver = null;
-        this.chain = null;
 
     }
 
