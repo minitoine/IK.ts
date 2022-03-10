@@ -13,14 +13,14 @@ for (var i = 0; i < numChains; i++ ){
         case 2: color = 0x000055;  break;
     }
 
-    var chain = new FIK.Chain3D( color )
+    var chain = new IK.Chain3D( color )
 
-    var startLoc = new FIK.V3(0, 0, -40);
-    startLoc = FIK._Math.rotateYDegs( startLoc, rotStep * i );
+    var startLoc = new IK.V3(0, 0, -40);
+    startLoc = IK._Math.rotateYDegs( startLoc, rotStep * i );
     var endLoc = startLoc.clone();
     endLoc.z -= defaultBoneLength;
 
-    var basebone = new FIK.Bone3D( startLoc, endLoc );
+    var basebone = new IK.Bone3D( startLoc, endLoc );
     chain.addBone( basebone );
 
     for (var j = 0; j < 7; j++) {

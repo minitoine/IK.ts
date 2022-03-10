@@ -21,13 +21,10 @@
 	</head>
 <body>
 
-<script src="js/libs/three.min.js"></script>
+<script src="build/IK.js"></script>
 <script src="js/libs/tween.min.js"></script>
 <script src='js/libs/uil.min.js'></script>
-<script src="js/controls/OrbitControls.js"></script>
-<script src="js/controls/TransformControls.js"></script>
 
-<script src="build/fik.js"></script>
 
 <div id="debug"></div>
 <div id="link">FULLIK GITHUB</div>
@@ -52,7 +49,7 @@
 
     var targetTween = null; 
 
-	var gui, demoGroup, scene, camera, renderer, controler, ambientLight, lights, mesh, bones, skeletonHelper, control, ground, grid;
+	var gui, demoGroup, scene, camera, renderer, controller, ambientLight, lights, mesh, bones, skeletonHelper, control, ground, grid;
 
 	var target, effector;
 
@@ -82,21 +79,21 @@
         var w = window.innerWidth;
         var h = window.innerHeight;
 
-		renderer = new THREE.WebGLRenderer( { antialias: true } );
+		renderer = new IK.THREE.WebGLRenderer( { antialias: true } );
 		renderer.setPixelRatio( window.devicePixelRatio );
 		renderer.setSize( w, h );
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.soft = true;
-        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        renderer.gammaInput = true;
-        renderer.gammaOutput = true;
+        renderer.shadowMap.type = IK.THREE.PCFSoftShadowMap;
+        //renderer.gammaInput = true;
+        //renderer.gammaOutput = true;
         renderer.setClearColor( 0x222322, 1 );
 		document.body.appendChild( renderer.domElement );
 
-        scene = new THREE.Scene();
-        camera = new THREE.PerspectiveCamera( 60, w / h, 0.1, 2000 );
-		controler = new THREE.OrbitControls( camera, renderer.domElement );
-        controler.enableKeys = false;
+        scene = new IK.THREE.Scene();
+        camera = new IK.THREE.PerspectiveCamera( 60, w / h, 0.1, 2000 );
+		controller = new IK.OrbitControls( camera, renderer.domElement );
+        controller.enableKeys = false;
 
         //
 
@@ -104,9 +101,9 @@
 		//scene.add( ambientLight );
 
 		lights = [];
-		lights[ 0 ] = new THREE.SpotLight( 0xffffff, 1, 0, Math.PI / 2 );
-		lights[ 1 ] = new THREE.PointLight( 0xFF8822, 1, 0 );
-		lights[ 2 ] = new THREE.PointLight( 0x2288FF, 1, 0 );
+		lights[ 0 ] = new IK.THREE.SpotLight( 0xffffff, 1, 0, Math.PI / 2 );
+		lights[ 1 ] = new IK.THREE.PointLight( 0xFF8822, 1, 0 );
+		lights[ 2 ] = new IK.THREE.PointLight( 0x2288FF, 1, 0 );
 
 		lights[ 0 ].position.set( 0, 200, 0 );
 		lights[ 1 ].position.set( 100, 200, 100 );
@@ -118,7 +115,7 @@
 
         lights[ 0 ].castShadow = true;
         var d = 150;
-        lights[ 0 ].shadow = new THREE.LightShadow( new THREE.OrthographicCamera( d, -d, d, -d,  100, 400 ));
+        //lights[ 0 ].shadow = new IK.THREE.LightShadow( new IK.THREE.OrthographicCamera( d, -d, d, -d,  100, 400 ));
         lights[ 0 ].shadow.bias = 0.0001;
         lights[ 0 ].shadow.mapSize.width = 2048;
         lights[ 0 ].shadow.mapSize.height = 2048;
@@ -128,12 +125,12 @@
 	    addGround()
 		initGui();
 
-        // FIK
+        // IK
 
-        defaultBoneDirection = FIK.Z_NEG;
+        defaultBoneDirection = IK.Z_NEG;
         defaultBoneLength = 10;
 
-        solver = current === '3D' ? new FIK.Structure3D( scene ) : new FIK.Structure2D( scene );
+        solver = current === '3D' ? new IK.Structure3D( scene ) : new IK.Structure2D( scene );
 
         var s = location.hash.substr( 4 ); 
         load( s || 'demo_1' );
@@ -157,16 +154,16 @@
 
             camera.position.set( 0,30,100 );
             lights[ 0 ].position.set( 0, 200, 0 );
-            controler.update();
+            controller.update();
 
-            ground = new THREE.Mesh( new THREE.PlaneBufferGeometry( 200, 200, 1, 1 ),  new THREE.ShadowMaterial({opacity:0.5}) );
-            ground.geometry.applyMatrix( new THREE.Matrix4().makeRotationX(-Math.PI*0.5) );
+            ground = new IK.THREE.Mesh( new IK.THREE.PlaneBufferGeometry( 200, 200, 1, 1 ),  new IK.THREE.ShadowMaterial({opacity:0.5}) );
+            ground.geometry.applyMatrix4( new IK.THREE.Matrix4().makeRotationX(-Math.PI*0.5) );
             ground.castShadow = false;
             ground.receiveShadow = true;
             ground.position.y = -5;
             scene.add( ground );
 
-            grid = new THREE.PolarGridHelper( 100, 16, 8, 64, 0x0A0B0A, 0x070807 );
+            grid = new IK.THREE.PolarGridHelper( 100, 16, 8, 64, 0x0A0B0A, 0x070807 );
             grid.position.y = -5.01;
             scene.add( grid );
 
@@ -174,16 +171,16 @@
 
             camera.position.set( 0,0,200 );
             lights[ 0 ].position.set( 40, 100, 200 );
-            controler.update();
+            controller.update();
 
-            ground = new THREE.Mesh( new THREE.PlaneBufferGeometry( 200, 200, 1, 1 ),  new THREE.ShadowMaterial({opacity:0.5}) );
+            ground = new IK.THREE.Mesh( new IK.THREE.PlaneBufferGeometry( 200, 200, 1, 1 ),  new IK.THREE.ShadowMaterial({opacity:0.5}) );
             //ground.geometry.applyMatrix( new THREE.Matrix4().makeRotationX(-Math.PI*0.5) );
             ground.castShadow = false;
             ground.receiveShadow = true;
             ground.position.z = -5.01;
             scene.add( ground );
 
-            grid = new THREE.GridHelper( 200, 16, 0x0A0B0A, 0x070807 );
+            grid = new IK.THREE.GridHelper( 200, 16, 0x0A0B0A, 0x070807 );
             grid.position.z = -5;
             grid.rotation.x = -Math.PI*0.5;
             scene.add( grid );
@@ -217,8 +214,8 @@
     function addTarget( position ){
 
         var n = {
-            mesh : new THREE.Mesh( new THREE.SphereBufferGeometry( 0.1, 6, 4 ),  new THREE.MeshStandardMaterial({color:0xFFFF00, wireframe:true }) ),
-            control : new THREE.TransformControls( camera, renderer.domElement ),
+            mesh : new IK.THREE.Mesh( new IK.THREE.SphereBufferGeometry( 0.1, 6, 4 ),  new IK.THREE.MeshStandardMaterial({color:0xFFFF00, wireframe:true }) ),
+            control : new IK.TransformControls( camera, renderer.domElement ),
         }
 
         n.mesh.castShadow = true;
@@ -268,11 +265,11 @@
 
         if(current==='2D'){
 
-            solver = new FIK.Structure2D( scene );
+            solver = new IK.Structure2D( scene );
 
         } else {
 
-            solver = new FIK.Structure3D( scene );
+            solver = new IK.Structure3D( scene );
 
         }
 
@@ -288,7 +285,7 @@
 
         gui = new UIL.Gui({ w:200 });
 
-        gui.add('title', { name:'FULLIK', prefix:FIK.REVISION, h:30, r:10 } );
+        gui.add('title', { name:'FULLIK', prefix:IK.REVISION, h:30, r:10 } );
 
         gui.add('button', { name:'', p:0, value:['2D', '3D'] } ).onChange( mode );
 
@@ -330,7 +327,7 @@
 
         if(!setting.auto) return;
 
-        targetTween = new TWEEN.Tween( goal ).to( {x:FIK._Math.randInt(-50, 50), y:FIK._Math.randInt(0, 50), z:current==='3D'? FIK._Math.randInt(-50, 50):0}, 2000 )
+        targetTween = new TWEEN.Tween( goal ).to( {x:IK._Math.randInt(-50, 50), y:IK._Math.randInt(0, 50), z:current==='3D'? IK._Math.randInt(-50, 50):0}, 2000 )
         .easing( TWEEN.Easing.Quadratic.Out )
         .onUpdate( function() { updateTarget(goal); updateSolver(); } )
         .onComplete( function() { autoMove(); } )
@@ -370,7 +367,7 @@
         solver.clear();
 
         // add basic target
-        addTarget( new THREE.Vector3(0, 30, 0) );
+        addTarget( new IK.THREE.Vector3(0, 30, 0) );
         target = targets[0].position;
 
     }

@@ -8,7 +8,7 @@
 
 	var GizmoMaterial = function ( parameters, plane ) {
 
-		THREE.MeshBasicMaterial.call( this );
+		new THREE.MeshBasicMaterial( this );
 
 		this.depthTest = false;
 		this.depthWrite = false;
@@ -18,7 +18,7 @@
 
 		this.setValues( parameters );
 
-		this.oldColor = this.color.clone();
+		this.oldColor = this.color?.clone() || 0xffffff;
 		this.oldOpacity = this.opacity;
 		this.isPlane = plane || false;
 
@@ -51,7 +51,7 @@
 
 	var GizmoLineMaterial = function ( parameters ) {
 
-		THREE.LineBasicMaterial.call( this );
+		new THREE.LineBasicMaterial();
 
 		this.depthTest = false;
 		this.depthWrite = false;
@@ -61,7 +61,7 @@
 
 		this.setValues( parameters );
 
-		this.oldColor = this.color.clone();
+		this.oldColor = this.color?.clone() || 0xffffff;
 		this.oldOpacity = this.opacity;
 
 		this.setColor = function ( r,g,b ) {
@@ -98,7 +98,7 @@
 
 		this.init = function () {
 
-			THREE.Object3D.call( this );
+			new THREE.Object3D( );
 
 			this.handles = new THREE.Object3D();
 			this.pickers = new THREE.Object3D();
@@ -247,7 +247,7 @@
 
 	THREE.TransformGizmoTranslate = function () {
 
-		THREE.TransformGizmo.call( this );
+		new THREE.TransformGizmo();
 
 		var arrowGeometry = new THREE.CylinderBufferGeometry( 0, 0.045, 0.27, 12, 1, false );
 		var arrowTopGeometry = new THREE.CircleBufferGeometry( 0.045, 12 );
@@ -459,7 +459,7 @@
 
 	THREE.TransformGizmoRotate = function () {
 
-		THREE.TransformGizmo.call( this );
+		new THREE.TransformGizmo( );
 
 
 
@@ -778,7 +778,7 @@
 
 	THREE.TransformGizmoScale = function () {
 
-		THREE.TransformGizmo.call( this );
+		new THREE.TransformGizmo();
 
 		var arrowGeometry = new THREE.Geometry();
 		var mesh = new THREE.Mesh( new THREE.BoxGeometry( 0.125, 0.125, 0.125 ) );
@@ -881,7 +881,7 @@
 		// TODO: Make non-uniform scale and rotate play nice in hierarchies
 		// TODO: ADD RXYZ contol
 
-		THREE.Object3D.call( this );
+		new THREE.Object3D();
 
 		domElement = ( domElement !== undefined ) ? domElement : document;
 

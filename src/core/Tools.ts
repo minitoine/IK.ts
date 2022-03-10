@@ -1,10 +1,10 @@
-var Tools = {
+const Tools = {
 
-	error: function ( str: string ) {
+    error: function ( str: string ) {
 
-		console.error( str );
+        console.error( str );
 
-	},
+    },
 
 
 };

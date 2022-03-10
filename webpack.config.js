@@ -1,7 +1,7 @@
   const path = require('path');
 
   module.exports = {
-    entry: './src/Fullik.ts',
+    entry: './src/IK.ts',
 
     devtool: 'inline-source-map',
     module: {
@@ -17,7 +17,9 @@
       extensions: [ '.tsx', '.ts', '.js' ],
     },
     output: {
-      filename: 'bundle.js',
+      filename: 'IK.js',
       path: path.resolve(__dirname, 'build'),
+      library: 'IK',
+      libraryTarget: 'window'
     },
   };

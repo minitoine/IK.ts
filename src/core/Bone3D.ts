@@ -1,136 +1,136 @@
-import { END, START, ConnectionType } from '../constants';
+import { ConnectionType } from '../constants';
 import { Joint3D } from './Joint3D';
 import { V3 } from '../math/V3';
 
 
 export class Bone3D {
-	static isBone3D = true;
-	joint: Joint3D;
-	start: V3;
-	end: V3;
-	boneConnectionPoint: ConnectionType;
-	length: number;
-	color: number;
-	name: string;
+    static isBone3D = true;
+    joint: Joint3D;
+    start: V3;
+    end: V3;
+    boneConnectionPoint: ConnectionType;
+    length: number;
+    color: number;
+    name: string;
 
-	constructor( startLocation: V3, endLocation: V3, directionUV?: V3, length?: number, color?: number ) {
+    constructor( startLocation: V3, endLocation: V3, directionUV?: V3, length?: number, color?: number ) {
 
-		this.joint = new Joint3D();
-		this.start = new V3();
-		this.end = new V3();
+        this.joint = new Joint3D();
+        this.start = new V3();
+        this.end = new V3();
 
-		this.boneConnectionPoint = END;
-		this.length = 0;
+        this.boneConnectionPoint = ConnectionType.END;
+        this.length = 0;
 
-		this.color = color || 0xFFFFFF;
-		this.name = '';
+        this.color = color || 0xFFFFFF;
+        this.name = '';
 
-		this.init( startLocation, endLocation, directionUV, length );
+        this.init( startLocation, endLocation, directionUV, length );
 
-	}
-
-
-	init( startLocation: V3, endLocation: V3, directionUV: V3, length: number ) {
-
-		this.setStartLocation( startLocation );
-		if ( endLocation ) {
-
-			this.setEndLocation( endLocation );
-			this.length = this.getLength();
-
-		} else {
-
-			this.setLength( length );
-			this.setEndLocation( this.start.plus( directionUV.normalised().multiplyScalar( length ) ) );
-
-		}
-
-	}
-
-	clone() {
-
-		var b = new Bone3D( this.start, this.end );
-		b.joint = this.joint.clone();
-		return b;
-
-	}
-
-	// SET
-
-	setColor( c: number ) {
-
-		this.color = c;
-
-	}
-
-	setBoneConnectionPoint( bcp: ConnectionType ) {
-
-		this.boneConnectionPoint = bcp;
-
-	}
-
-	setHingeClockwise( angle: number ) {
+    }
 
 
-		this.joint.setHingeClockwise( angle );
+    init( startLocation: V3, endLocation: V3, directionUV: V3, length: number ) {
 
-	}
+        this.setStartLocation( startLocation );
+        if ( endLocation ) {
 
-	setHingeAnticlockwise( angle: number ) {
+            this.setEndLocation( endLocation );
+            this.length = this.getLength();
 
-		this.joint.setHingeAnticlockwise( angle );
+        } else {
 
-	}
+            this.setLength( length );
+            this.setEndLocation( this.start.plus( directionUV.normalised().multiplyScalar( length ) ) );
 
-	setBallJointConstraintDegs( angle: number ) {
+        }
 
-		this.joint.setBallJointConstraintDegs( angle );
+    }
 
-	}
+    clone() {
 
-	setStartLocation( location: V3 ) {
+        const b = new Bone3D( this.start, this.end );
+        b.joint = this.joint.clone();
+        return b;
 
-		this.start.copy( location );
+    }
 
-	}
+    // SET
 
-	setEndLocation( location: V3 ) {
+    setColor( c: number ) {
 
-		this.end.copy( location );
+        this.color = c;
 
-	}
+    }
 
-	setLength( lng: number ) {
+    setBoneConnectionPoint( bcp: ConnectionType ) {
 
-		if ( lng > 0 ) this.length = lng;
+        this.boneConnectionPoint = bcp;
 
-	}
+    }
 
-	setJoint( joint: Joint3D ) {
-
-		this.joint = joint;
-
-	}
+    setHingeClockwise( angle: number ) {
 
 
-	// GET
+        this.joint.setHingeClockwise( angle );
 
-	getBoneConnectionPoint() {
+    }
 
-		return this.boneConnectionPoint;
+    setHingeAnticlockwise( angle: number ) {
 
-	}
+        this.joint.setHingeAnticlockwise( angle );
 
-	getDirectionUV() {
+    }
 
-		return this.end.minus( this.start ).normalize();
+    setBallJointConstraintDegs( angle: number ) {
 
-	}
+        this.joint.setBallJointConstraintDegs( angle );
 
-	getLength() {
+    }
 
-		return this.start.distanceTo( this.end );
+    setStartLocation( location: V3 ) {
 
-	}
+        this.start.copy( location );
+
+    }
+
+    setEndLocation( location: V3 ) {
+
+        this.end.copy( location );
+
+    }
+
+    setLength( lng: number ) {
+
+        if ( lng > 0 ) this.length = lng;
+
+    }
+
+    setJoint( joint: Joint3D ) {
+
+        this.joint = joint;
+
+    }
+
+
+    // GET
+
+    getBoneConnectionPoint() {
+
+        return this.boneConnectionPoint;
+
+    }
+
+    getDirectionUV() {
+
+        return this.end.minus( this.start ).normalize();
+
+    }
+
+    getLength() {
+
+        return this.start.distanceTo( this.end );
+
+    }
 
 }

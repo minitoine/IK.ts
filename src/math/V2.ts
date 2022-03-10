@@ -1,203 +1,203 @@
 export class V2 {
 
-	static isVector2 = true;
-	x: number;
-	y: number;
+    static isVector2 = true;
+    x: number;
+    y: number;
 
-	constructor( x?: number, y?: number ) {
+    constructor( x?: number, y?: number ) {
 
-		this.x = x || 0;
-		this.y = y || 0;
+        this.x = x || 0;
+        this.y = y || 0;
 
-	}
+    }
 
 
-	set( x: number, y: number ) {
+    set( x: number, y: number ) {
 
-	    this.x = x || 0;
-	    this.y = y || 0;
-	    return this;
+        this.x = x || 0;
+        this.y = y || 0;
+        return this;
 
-	}
+    }
 
-	distanceTo( v: V2 ) {
+    distanceTo( v: V2 ) {
 
-		return Math.sqrt( this.distanceToSquared( v ) );
+        return Math.sqrt( this.distanceToSquared( v ) );
 
-	}
+    }
 
-	distanceToSquared( v: V2 ) {
+    distanceToSquared( v: V2 ) {
 
-		var dx = this.x - v.x, dy = this.y - v.y;
-		return dx * dx + dy * dy;
+        const dx = this.x - v.x, dy = this.y - v.y;
+        return dx * dx + dy * dy;
 
-	}
+    }
 
-	multiplyScalar( scalar: number ) {
+    multiplyScalar( scalar: number ) {
 
-		this.x *= scalar;
-		this.y *= scalar;
-		return this;
+        this.x *= scalar;
+        this.y *= scalar;
+        return this;
 
-	}
+    }
 
-	divideScalar( scalar: number ) {
+    divideScalar( scalar: number ) {
 
-		return this.multiplyScalar( 1 / scalar );
+        return this.multiplyScalar( 1 / scalar );
 
-	}
+    }
 
-	length() {
+    length() {
 
-		return Math.sqrt( this.x * this.x + this.y * this.y );
+        return Math.sqrt( this.x * this.x + this.y * this.y );
 
-	}
+    }
 
-	normalize() {
+    normalize() {
 
-		return this.divideScalar( this.length() || 1 );
+        return this.divideScalar( this.length() || 1 );
 
-	}
+    }
 
-	normalised() {
+    normalised() {
 
-	    return new V2( this.x, this.y ).normalize();
+        return new V2( this.x, this.y ).normalize();
 
-	}
+    }
 
-	lengthSq() {
+    lengthSq() {
 
-		return this.x * this.x + this.y * this.y;
+        return this.x * this.x + this.y * this.y;
 
-	}
+    }
 
-	add( v: V2 ) {
+    add( v: V2 ) {
 
-		this.x += v.x;
-		this.y += v.y;
-	    return this;
+        this.x += v.x;
+        this.y += v.y;
+        return this;
 
-	}
+    }
 
-	plus( v: V2 ) {
+    plus( v: V2 ) {
 
-	    return new V2( this.x + v.x, this.y + v.y );
+        return new V2( this.x + v.x, this.y + v.y );
 
-	}
+    }
 
-	min( v: V2 ) {
+    min( v: V2 ) {
 
-		this.x -= v.x;
-		this.y -= v.y;
+        this.x -= v.x;
+        this.y -= v.y;
 
-	    return this;
+        return this;
 
-	}
+    }
 
-	minus( v: V2 ) {
+    minus( v: V2 ) {
 
-	    return new V2( this.x - v.x, this.y - v.y );
+        return new V2( this.x - v.x, this.y - v.y );
 
-	}
+    }
 
-	divideBy( value: number ) {
+    divideBy( value: number ) {
 
-	    return new V2( this.x, this.y ).divideScalar( value );
+        return new V2( this.x, this.y ).divideScalar( value );
 
-	}
+    }
 
-	dot( a: V2 ) {
+    dot( a: V2 ) {
 
-		return this.x * a.x + this.y * a.y;
+        return this.x * a.x + this.y * a.y;
 
-	}
+    }
 
-	negate() {
+    negate() {
 
-	    this.x = - this.x;
-	    this.y = - this.y;
-	    return this;
+        this.x = - this.x;
+        this.y = - this.y;
+        return this;
 
-	}
+    }
 
-	negated() {
+    negated() {
 
-	    return new V2( - this.x, - this.y );
+        return new V2( - this.x, - this.y );
 
-	}
+    }
 
-	clone() {
+    clone() {
 
-	    return new V2( this.x, this.y );
+        return new V2( this.x, this.y );
 
-	}
+    }
 
-	copy( v: V2 ) {
+    copy( v: V2 ) {
 
-	    this.x = v.x;
-	    this.y = v.y;
-	    return this;
+        this.x = v.x;
+        this.y = v.y;
+        return this;
 
-	}
+    }
 
-	cross( v: V2 ) {
+    cross( v: V2 ) {
 
-	    return this.x * v.y - this.y * v.x;
+        return this.x * v.y - this.y * v.x;
 
-	}
+    }
 
-	sign( v: V2 ) {
+    sign( v: V2 ) {
 
-		var s = this.cross( v );
-		return s >= 0 ? 1 : - 1;
+        const s = this.cross( v );
+        return s >= 0 ? 1 : - 1;
 
-	}
+    }
 
-	approximatelyEquals( v: V2, t: number ) {
+    approximatelyEquals( v: V2, t: number ) {
 
-	    if ( t < 0 ) return false;
-	    var xDiff = Math.abs( this.x - v.x );
-	    var yDiff = Math.abs( this.y - v.y );
-	    return ( xDiff < t && yDiff < t );
+        if ( t < 0 ) return false;
+        const xDiff = Math.abs( this.x - v.x );
+        const yDiff = Math.abs( this.y - v.y );
+        return ( xDiff < t && yDiff < t );
 
-	}
+    }
 
-	rotate( angle: number ) {
+    rotate( angle: number ) {
 
-		var cos = Math.cos( angle );
-		var sin = Math.sin( angle );
-		var x = this.x * cos - this.y * sin;
-		var y = this.x * sin + this.y * cos;
-		this.x = x;
-		this.y = y;
-		return this;
+        const cos = Math.cos( angle );
+        const sin = Math.sin( angle );
+        const x = this.x * cos - this.y * sin;
+        const y = this.x * sin + this.y * cos;
+        this.x = x;
+        this.y = y;
+        return this;
 
-	}
+    }
 
-	angleTo( v: V2 ) {
+    angleTo( v: V2 ) {
 
-		var a = this.dot( v ) / ( Math.sqrt( this.lengthSq() * v.lengthSq() ) );
-		if ( a <= - 1 ) return Math.PI;
-		if ( a >= 1 ) return 0;
-		return Math.acos( a );
+        const a = this.dot( v ) / ( Math.sqrt( this.lengthSq() * v.lengthSq() ) );
+        if ( a <= - 1 ) return Math.PI;
+        if ( a >= 1 ) return 0;
+        return Math.acos( a );
 
-	}
+    }
 
-	getSignedAngle( v: V2 ) {
+    getSignedAngle( v: V2 ) {
 
-		var a = this.angleTo( v );
-		var s = this.sign( v );
-		return s === 1 ? a : - a;
+        const a = this.angleTo( v );
+        const s = this.sign( v );
+        return s === 1 ? a : - a;
 
-	}
+    }
 
-	constrainedUV( baselineUV: V2, min: number, max: number ) {
+    constrainedUV( baselineUV: V2, min: number, max: number ) {
 
-		var angle = baselineUV.getSignedAngle( this );
-		if ( angle > max ) this.copy( baselineUV ).rotate( max );
-		if ( angle < min ) this.copy( baselineUV ).rotate( min );
-		return this;
+        const angle = baselineUV.getSignedAngle( this );
+        if ( angle > max ) this.copy( baselineUV ).rotate( max );
+        if ( angle < min ) this.copy( baselineUV ).rotate( min );
+        return this;
 
-	}
+    }
 
 }

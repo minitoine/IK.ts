@@ -1,158 +1,158 @@
-import { END, JointType, START } from '../constants';
+import { ConnectionType, JointType } from '../constants';
 import { Joint2D } from './Joint2D';
 import { V2 } from '../math/V2';
 
 export class Bone2D {
-	isBone2D = true;
-	start: V2;
-	end: V2;
-	length: number;
-	joint: Joint2D;
-	globalConstraintUV = new V2( 1, 0 );
-	boneConnectionPoint = END;
-	color?: number;
-	name: string;
+    isBone2D = true;
+    start: V2;
+    end: V2;
+    length: number;
+    joint: Joint2D;
+    globalConstraintUV = new V2( 1, 0 );
+    boneConnectionPoint = ConnectionType.END;
+    color?: number;
+    name: string;
 
-	constructor( Start: V2, End?: V2, directionUV?: V2, length?: number, clockwiseDegs?: number, anticlockwiseDegs?: number, color?: any ) {
+    constructor( Start: V2, End?: V2, directionUV?: V2, length?: number, clockwiseDegs?: number, anticlockwiseDegs?: number, color?: number ) {
 
-		this.start = new V2();
-		this.end = new V2();
-		this.length = length || 0;
+        this.start = new V2();
+        this.end = new V2();
+        this.length = length || 0;
 
-		this.joint = new Joint2D( clockwiseDegs, anticlockwiseDegs );
+        this.joint = new Joint2D( clockwiseDegs, anticlockwiseDegs );
 
 
-		this.color = color || null;
-		this.name = '';
+        this.color = color || null;
+        this.name = '';
 
-		// init
+        // init
 
-		this.setStartLocation( Start );
+        this.setStartLocation( Start );
 
-		if ( End ) {
+        if ( End ) {
 
-			this.setEndLocation( End );
-			if ( this.length === 0 ) this.length = this.getLength();
+            this.setEndLocation( End );
+            if ( this.length === 0 ) this.length = this.getLength();
 
-		} else if ( directionUV ) {
+        } else if ( directionUV ) {
 
-			this.setEndLocation( this.start.plus( directionUV.normalised().multiplyScalar( this.length ) ) );
+            this.setEndLocation( this.start.plus( directionUV.normalised().multiplyScalar( this.length ) ) );
 
-		}
+        }
 
-	}
+    }
 
 
-	clone() {
+    clone() {
 
-		var b = new Bone2D( this.start, this.end );
-		b.length = this.length;
-		b.globalConstraintUV = this.globalConstraintUV;
-		b.boneConnectionPoint = this.boneConnectionPoint;
-		b.joint = this.joint.clone();
-		b.color = this.color;
-		b.name = this.name;
-		return b;
+        const b = new Bone2D( this.start, this.end );
+        b.length = this.length;
+        b.globalConstraintUV = this.globalConstraintUV;
+        b.boneConnectionPoint = this.boneConnectionPoint;
+        b.joint = this.joint.clone();
+        b.color = this.color;
+        b.name = this.name;
+        return b;
 
-	}
+    }
 
 
-	// SET
+    // SET
 
-	setName( name: string ) {
+    setName( name: string ) {
 
-		this.name = name;
+        this.name = name;
 
-	}
+    }
 
-	setColor( c: number ) {
+    setColor( c: number ) {
 
-		this.color = c;
+        this.color = c;
 
-	}
+    }
 
-	setBoneConnectionPoint( bcp: number ) {
+    setBoneConnectionPoint( bcp: number ) {
 
-		this.boneConnectionPoint = bcp;
+        this.boneConnectionPoint = bcp;
 
-	}
+    }
 
-	setStartLocation( v: V2 ) {
+    setStartLocation( v: V2 ) {
 
-		this.start.copy( v );
+        this.start.copy( v );
 
-	}
+    }
 
-	setEndLocation( v: V2 ) {
+    setEndLocation( v: V2 ) {
 
-		this.end.copy( v );
+        this.end.copy( v );
 
-	}
+    }
 
-	setLength( length: number ) {
+    setLength( length: number ) {
 
-		if ( length > 0 ) this.length = length;
+        if ( length > 0 ) this.length = length;
 
-	}
+    }
 
-	setGlobalConstraintUV( v: V2 ) {
+    setGlobalConstraintUV( v: V2 ) {
 
-		this.globalConstraintUV = v;
+        this.globalConstraintUV = v;
 
-	}
+    }
 
-	// SET JOINT
+    // SET JOINT
 
-	setJoint( joint: Joint2D ) {
+    setJoint( joint: Joint2D ) {
 
-		this.joint = joint;
+        this.joint = joint;
 
-	}
+    }
 
-	setClockwiseConstraintDegs( angleDegs: number ) {
+    setClockwiseConstraintDegs( angleDegs: number ) {
 
-		this.joint.setClockwiseConstraintDegs( angleDegs );
+        this.joint.setClockwiseConstraintDegs( angleDegs );
 
-	}
+    }
 
-	setAnticlockwiseConstraintDegs( angleDegs: number ) {
+    setAnticlockwiseConstraintDegs( angleDegs: number ) {
 
-		this.joint.setAnticlockwiseConstraintDegs( angleDegs );
+        this.joint.setAnticlockwiseConstraintDegs( angleDegs );
 
-	}
+    }
 
-	setJointConstraintCoordinateSystem( coordSystem: JointType ) {
+    setJointConstraintCoordinateSystem( coordSystem: JointType ) {
 
-		this.joint.setConstraintCoordinateSystem( coordSystem );
+        this.joint.setConstraintCoordinateSystem( coordSystem );
 
-	}
+    }
 
 
-	// GET
+    // GET
 
-	getGlobalConstraintUV() {
+    getGlobalConstraintUV() {
 
-		return this.globalConstraintUV;
+        return this.globalConstraintUV;
 
-	}
+    }
 
-	getBoneConnectionPoint() {
+    getBoneConnectionPoint() {
 
-		return this.boneConnectionPoint;
+        return this.boneConnectionPoint;
 
-	}
+    }
 
-	getDirectionUV() {
+    getDirectionUV() {
 
-		return this.end.minus( this.start ).normalize();
+        return this.end.minus( this.start ).normalize();
 
-	}
+    }
 
-	getLength() {
+    getLength() {
 
-		return this.start.distanceTo( this.end );
+        return this.start.distanceTo( this.end );
 
-	}
+    }
 
 
 }
