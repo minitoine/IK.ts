@@ -19,8 +19,3 @@ export { IKSolver } from './solver/IKSolver';
 export { HISolver } from './solver/HISolver';
 
 export * from './constants';
-
-export * as THREE from 'three';
-export { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-export { TransformControls } from 'three/examples/jsm/controls/TransformControls';
-

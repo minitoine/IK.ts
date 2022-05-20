@@ -1,7 +1,8 @@
   const path = require('path');
 
   module.exports = {
-    entry: './src/IK.ts',
+
+    entry: './src/index.ts',
 
     devtool: 'inline-source-map',
     module: {
@@ -17,9 +18,11 @@
       extensions: [ '.tsx', '.ts', '.js' ],
     },
     output: {
-      filename: 'IK.js',
+      filename: 'index.js',
       path: path.resolve(__dirname, 'build'),
-      library: 'IK',
-      libraryTarget: 'window'
+      libraryTarget: 'module'
+    },
+    experiments: {
+      outputModule: true,
     },
   };
