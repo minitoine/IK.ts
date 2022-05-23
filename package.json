@@ -7,15 +7,11 @@
   "jsnext:main": "build/ik.js",
   "module": "build/ik.js",
   "files": [
-    "package.json",
-    "LICENSE",
-    "README.md",
-    "build/ik.js",
-    "build/ik.js.LICENSE.txt",
-    "src",
-    "examples/js",
-    "examples/fonts"
+    "build"
   ],
+  "main": "build/index.cjs",
+  "module": "build/index.js",
+  "types": "build/types/index.d.ts",
   "directories": {
     "example": "examples"
   },
@@ -25,7 +21,8 @@
     "dev": "webpack watch --mode development",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "npm run build"
   },
   "keywords": [
     "ik.ts",
